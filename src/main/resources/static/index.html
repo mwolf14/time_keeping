@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Employee Time Login</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css" />
 </head>
 <body>
 <!-- This is served by default from the server -->
 <h1>Employee Time Login</h1>
-<h1>Test push. Second Test Push. Beep Boop Bop.</h1>
     <nav>
-    <b><a class="button" href="unknown.html">Login</a> &nbsp; 
-        <a class="button" href="unknown.html">Sign Up</a> &nbsp; 
-        <a class="button" href="unknown.html">Forgot password or username?</a>
+      <form method="post" action="employee.html">
+        <section>
+          <label for="myName">Username: </label>
+          <input type="text" name="myName" id="myName" required>
+        </section>
+        <section>
+          <label for="myEmail">Password</label>
+          <input type="text" name="myEmail" id="myEmail" required>
+        </section>
+        <input type="submit" id="mySubmit" value="Login">
+      </form>
+    <b>
+      <a class="button" href="unknown.html">Sign Up</a> &nbsp;
+      <a class="button" href="unknown.html">Forgot password or username?</a>
     </b>
 </nav>
 </body>
