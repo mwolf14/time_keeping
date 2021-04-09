@@ -1,5 +1,6 @@
 package com.blueteam.timekeeping.controllers;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class EmployeeController {
 	
 	@PostMapping("/createemployee")
 	public String CreatEmployee(@RequestBody Employee emp){
+		Employee newEmployee = new Employee();
 		String firstInit = emp.getFirstName().substring(0, 1);
 		String lastName = emp.getLastName();
 		String userName = firstInit + lastName;
@@ -46,7 +48,15 @@ public class EmployeeController {
 			}
 		}
 		emp.setUserName((currentNum == 0)? userName : userName + currentNum);
-		empRepo.save(emp);
+		Calendar now =  Calendar.getInstance();
+	    //get the second and concat a string to be salted into the password
+		
+		newEmployee.setFirstName(emp.getFirstName());
+		newEmployee.setLastName(emp.getLastName());
+		newEmployee.setPassword(emp.getPassword());
+		newEmployee.setRecId("147");
+		empRepo.save(newEmployee);
+		empRepo.flush();
 		return "employeecreated";
 	}
 	@GetMapping("/retrieveall")

@@ -44,7 +44,6 @@ public class Employee extends Person {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-		//this.userName = userNameService.createUserName(userName);
 	}
 	
 	public List<TimeCard> getTimeCards() {
@@ -60,15 +59,6 @@ public class Employee extends Person {
 		return recId;
 	}
 	
-	public void setRecId() {
-		//this is the salt for the password
-		if (recId == null) {
-			Calendar now =  Calendar.getInstance();
-			//get the second and concat a string to be salted into the password
-			recId= now.get(Calendar.SECOND) + "";
-			System.out.println("Rec Id for this user is: " + recId);
-		}
-	}
 	public void setRecId(String recId) {
 		this.recId = recId;
 	}
@@ -84,18 +74,9 @@ public class Employee extends Person {
 		return this.password;
 	}
 	public void setPassword(String password) {
-		if (this.recId == null) {
-			this.setRecId();
-		}
-		this.password = recId + password + password.substring(0,4);
-		/*try {
-		 MessageDigest md = MessageDigest.getInstance("MD5");
-		 md.update((.getBytes());
-		this.password = md.digest().toString();
-		}
-		catch(Exception ex) {
-			System.out.println("MD5 hash failed. Employee.setPassword()");
-		}*/
+		String pepper = password.substring(0,4);
+		this.password = recId + password + pepper;
+		System.out.println(this.password);
 	}
 	
 	public Employee() {
