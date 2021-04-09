@@ -8,7 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.blueteam.timekeeping.repositories.EmployeeRepository;
+import com.blueteam.timekeeping.service.UserNameService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -16,11 +21,31 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({"hibernateLayInitializer", "handler", "images"})
 public class Employee extends Person {
 
+	//TODO: i need to get the service working or embed it in this class to take care of setting the username. right now the 
+	//model only has name (not fname and lname)
+	/* this if fighting me
+	@Transient
+	@Autowired
+	private UserNameService userNameService;*/
+	
 	private String password;
 	private String recId;
+	
+	private String userName;
+	private boolean approved;
+	
 	@OneToMany
 	@JoinColumn(name="id", nullable = false, insertable=false, updatable=false)
 	private List<TimeCard> timeCards;
+	
+	public String getUserName() {
+		return this.userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+		//this.userName = userNameService.createUserName(userName);
+	}
 	
 	public List<TimeCard> getTimeCards() {
 		return timeCards;
@@ -31,11 +56,11 @@ public class Employee extends Person {
 	}
 	
 	//methods to deal with the password
-	private String getRecId() {
+	public String getRecId() {
 		return recId;
 	}
 	
-	private void setRecId() {
+	public void setRecId() {
 		//this is the salt for the password
 		if (recId == null) {
 			Calendar now =  Calendar.getInstance();
@@ -44,35 +69,38 @@ public class Employee extends Person {
 			System.out.println("Rec Id for this user is: " + recId);
 		}
 	}
+	public void setRecId(String recId) {
+		this.recId = recId;
+	}
 	
 	public boolean comparePasswords(String password) {
-		String hashedPassword= "";
-		try {
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		 md.update((this.recId + password + password.substring(0,4)).getBytes());
-		 hashedPassword = md.digest().toString();
-		} catch(Exception ex) {
-			System.out.println("MD5 hash failed. Employee.comparePassword");
-		}
-		if (hashedPassword.toString() == this.password) {
+		if (password.compareTo(this.password) == 0) {
 			return true;
 		}
 		return false;
 	}
 	
+	public String getPassword() {
+		return this.password;
+	}
 	public void setPassword(String password) {
-		try {
+		if (this.recId == null) {
+			this.setRecId();
+		}
+		this.password = recId + password + password.substring(0,4);
+		/*try {
 		 MessageDigest md = MessageDigest.getInstance("MD5");
-		 md.update((recId + password + password.substring(0,4)).getBytes());
+		 md.update((.getBytes());
 		this.password = md.digest().toString();
 		}
 		catch(Exception ex) {
 			System.out.println("MD5 hash failed. Employee.setPassword()");
-		}
+		}*/
 	}
 	
 	public Employee() {
-		super();
-		setRecId();
+		super();		
 	}
+
+
 }

@@ -8,17 +8,25 @@ import javax.persistence.MappedSuperclass;
 public abstract class Person extends ModelBase {
 
 	//fields
-	private String name;
+	private String firstName;
+	private String lastName;
 	private LocalDate dob;
 	
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String name) {
+		this.firstName = name;
+	}
+	public void setLastName(String name) {
+		this.lastName = name;
 	}
 
+	public String getLastName() {
+		return lastName;
+	}
+	
 	public LocalDate getDob() {
 		return dob;
 	}

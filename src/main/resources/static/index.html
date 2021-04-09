@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Employee Time Login</title>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+    <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" />
 </head>
 <body>
 <!-- This is served by default from the server -->
 <h1>Employee Time Login</h1>
     <nav>
-      <form method="post" action="employee.html">
+      <form method="post" action="/login">
         <section>
           <label for="myName">Username: </label>
           <input type="text" name="myName" id="myName" required>
@@ -21,8 +21,8 @@
         <input type="submit" id="mySubmit" value="Login">
       </form>
     <b>
-      <a class="button" href="unknown.html">Sign Up</a> &nbsp;
-      <a class="button" href="unknown.html">Forgot password or username?</a>
+      <a class="button" href="/createemployee">Sign Up</a> &nbsp;
+      <a class="button" href="/finduser">Forgot password or username?</a>
     </b>
 </nav>
 </body>
