@@ -27,7 +27,7 @@ public class LoginController {
 		//get user 
 		try {
 		Employee existingEmployee = empRepo.findByUserName(emp.getUserName());
-		emp.setRecId(existingEmployee.getRecId());
+		//emp.setRecId(existingEmployee.getRecId());
 		String passedInPassword = emp.getPassword();
 		emp.setPassword(passedInPassword);
 		if (emp.comparePasswords(existingEmployee.getPassword())) {
