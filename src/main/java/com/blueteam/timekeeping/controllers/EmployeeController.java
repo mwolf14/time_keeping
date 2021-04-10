@@ -59,7 +59,7 @@ public class EmployeeController {
 		empRepo.flush();
 		return "employeecreated";
 	}
-	@GetMapping("/retrieveall")
+	@GetMapping("/retrieveallusers")
 	public String RetrieveAll(Model model){
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
