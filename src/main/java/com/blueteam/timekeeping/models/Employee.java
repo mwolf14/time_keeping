@@ -29,10 +29,11 @@ public class Employee extends Person {
 	private UserNameService userNameService;*/
 	
 	private String password;
-	private String recId;
+	//private String recId;
 	
 	private String userName;
 	private boolean approved;
+	private boolean supervisor;
 	
 	@OneToMany
 	@JoinColumn(name="id", nullable = false, insertable=false, updatable=false)
@@ -53,15 +54,21 @@ public class Employee extends Person {
 	public void setTimeCards(List<TimeCard> timeCards) {
 		this.timeCards = timeCards;
 	}
+	public void setIsSupervisor(boolean supervisor) {
+		this.supervisor = supervisor;
+	}
+	public boolean getIsSupervisor() {
+		return supervisor;
+	}
 	
 	//methods to deal with the password
-	public String getRecId() {
+	/*public String getRecId() {
 		return recId;
 	}
 	
 	public void setRecId(String recId) {
 		this.recId = recId;
-	}
+	}*/
 	
 	public boolean comparePasswords(String password) {
 		if (password.compareTo(this.password) == 0) {
@@ -76,7 +83,7 @@ public class Employee extends Person {
 
 	public void setPassword(String password) {
 		String pepper = password.substring(0,4);
-		this.password = recId + password + pepper;
+		this.password =  password + pepper;
 		System.out.println(this.password);
 	}
 	

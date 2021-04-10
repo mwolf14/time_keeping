@@ -59,7 +59,7 @@ public class EmployeeController {
 	public String RetrieveAll(Model model){
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
-		return "retrieveall" ;
+		return "retrieveallusers" ;
 	}
 	
 }

@@ -2,9 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test</title>
+    <title>Employee Time Login</title>
+    <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" />
 </head>
 <body>
-<h1>Time Keeping Test</h1>
+<!-- This is served by default from the server -->
+<h1>Employee Time Login</h1>
+    <nav>
+      <form method="post" action="/login">
+        <section>
+          <label for="myName">Username: </label>
+          <input type="text" name="myName" id="myName" required>
+        </section>
+        <section>
+          <label for="password">Password</label>
+          <input type="text" name="password" id="password" required>
+        </section>
+        <input type="submit" id="mySubmit" value="Login">
+      </form>
+    <b>
+      <a class="button" href="/createemployee">Sign Up</a> &nbsp;
+      <a class="button" href="/finduser">Forgot password or username?</a>
+    </b>
+</nav>
 </body>
 </html>
