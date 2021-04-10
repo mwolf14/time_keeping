@@ -8,8 +8,5 @@ import com.blueteam.timekeeping.models.Employee;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
-
-	
-
 	Employee findByUserName(String username);
 }

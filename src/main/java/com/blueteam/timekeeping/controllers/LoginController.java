@@ -4,10 +4,6 @@ import java.awt.PageAttributes.MediaType;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,6 +33,9 @@ public class LoginController {
 		String passedInPassword = user.get("password");
 		emp.setPassword(passedInPassword);
 		if (emp.comparePasswords(existingEmployee.getPassword())) {
+			//here we need to add in the user session data to keep the session alive for logged in users
+			
+			
 			if (existingEmployee.getIsSupervisor())
 			{ 
 				return "manager";
