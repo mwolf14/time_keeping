@@ -25,8 +25,8 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/createemployee")
-	public String CreatEmployee(@RequestBody Employee emp){
-		Employee newEmployee = new Employee();
+	public String CreatEmployee(@RequestBody Employee emp, Model model){
+	
 		String firstInit = emp.getFirstName().substring(0, 1);
 		String lastName = emp.getLastName();
 		String userName = firstInit + lastName;
@@ -48,11 +48,10 @@ public class EmployeeController {
 			}
 		}
 		emp.setUserName((currentNum == 0)? userName : userName + currentNum);
-		newEmployee.setFirstName(emp.getFirstName());
-		newEmployee.setLastName(emp.getLastName());
-		newEmployee.setPassword(emp.getPassword());
-		empRepo.save(newEmployee);
+		System.out.println(emp.getIsSupervisor());
+		empRepo.save(emp);
 		empRepo.flush();
+		model.addAttribute("userName",emp.getUserName());
 		return "employeecreated";
 	}
 	@GetMapping("/retrieveallusers")

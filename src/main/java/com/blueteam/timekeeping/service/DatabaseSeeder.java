@@ -55,7 +55,9 @@ public class DatabaseSeeder {
 		Employee testEmployee = new Employee();
 		testEmployee.setFirstName("john");
 		testEmployee.setLastName("doe");
-		testEmployee.setPassword("knownPassword");
+		testEmployee.setPassword("password");
+		testEmployee.setUserName("jdoe");
+		testEmployee.setIsSupervisor(true);
 		employees.add(testEmployee);
 	}
 	public  void Seed() {
