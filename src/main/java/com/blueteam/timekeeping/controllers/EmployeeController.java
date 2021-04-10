@@ -48,13 +48,9 @@ public class EmployeeController {
 			}
 		}
 		emp.setUserName((currentNum == 0)? userName : userName + currentNum);
-		Calendar now =  Calendar.getInstance();
-	    //get the second and concat a string to be salted into the password
-		
 		newEmployee.setFirstName(emp.getFirstName());
 		newEmployee.setLastName(emp.getLastName());
 		newEmployee.setPassword(emp.getPassword());
-		newEmployee.setRecId("147");
 		empRepo.save(newEmployee);
 		empRepo.flush();
 		return "employeecreated";

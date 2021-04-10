@@ -73,6 +73,7 @@ public class Employee extends Person {
 	public String getPassword() {
 		return this.password;
 	}
+
 	public void setPassword(String password) {
 		String pepper = password.substring(0,4);
 		this.password = recId + password + pepper;
