@@ -1,3 +1,14 @@
 * {
   background-color: #ededed;
 }
+h1 { 
+    text-align: center;
+     font-size: 3em;
+}
+h2 {
+    text-align: center;
+}
+nav { 
+    text-align: center;
+      font-weight: bold;
+}
