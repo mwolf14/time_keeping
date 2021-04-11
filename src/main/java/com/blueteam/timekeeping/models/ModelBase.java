@@ -11,10 +11,10 @@ public abstract class ModelBase {
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
-	public int GetId() {
+	public int getId() {
 		return id;
 	}
-	public void SetId(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public ModelBase() {

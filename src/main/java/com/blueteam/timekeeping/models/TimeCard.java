@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import com.blueteam.timekeeping.models.ModelBase;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

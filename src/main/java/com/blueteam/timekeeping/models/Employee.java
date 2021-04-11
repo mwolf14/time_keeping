@@ -9,28 +9,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.blueteam.timekeeping.repositories.EmployeeRepository;
-import com.blueteam.timekeeping.service.UserNameService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.blueteam.timekeeping.models.Person;
 
 @Entity
 @Table(name="Employees")
 @JsonIgnoreProperties({"hibernateLayInitializer", "handler", "images"})
 public class Employee extends Person {
-
-	//TODO: i need to get the service working or embed it in this class to take care of setting the username. right now the 
-	//model only has name (not fname and lname)
-	/* this if fighting me
-	@Transient
-	@Autowired
-	private UserNameService userNameService;*/
 	
 	private String password;
-	//private String recId;
-	
+	//private String recId;	
 	private String userName;
 	private boolean approved;
 	private boolean supervisor;
@@ -90,6 +78,4 @@ public class Employee extends Person {
 	public Employee() {
 		super();		
 	}
-
-
 }
