@@ -25,8 +25,7 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/createemployee")
-	public String CreatEmployee(@RequestBody Employee emp, Model model){
-	
+	public String CreatEmployee(@RequestBody Employee emp, Model model){	
 		String firstInit = emp.getFirstName().substring(0, 1);
 		String lastName = emp.getLastName();
 		String userName = firstInit + lastName;
