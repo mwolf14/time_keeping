@@ -1,9 +1,11 @@
 package com.blueteam.timekeeping.models;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -24,8 +26,8 @@ public class Employee extends Person {
 	private boolean supervisor;
 	
 	@OneToMany
-	@JoinColumn(name="id", nullable = false, insertable=false, updatable=false)
-	private List<TimeCard> timeCards;
+	@JoinColumn(name="timecard_id")
+	private List<TimeCard> timeCards = new ArrayList<>();
 	
 	public String getUserName() {
 		return this.userName;
@@ -37,6 +39,9 @@ public class Employee extends Person {
 	
 	public List<TimeCard> getTimeCards() {
 		return timeCards;
+	}
+	public void addTimeCard(TimeCard timecard) {
+		this.timeCards.add(timecard);
 	}
 
 	public void setTimeCards(List<TimeCard> timeCards) {

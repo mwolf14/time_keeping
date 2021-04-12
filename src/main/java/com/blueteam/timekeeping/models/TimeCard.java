@@ -1,8 +1,13 @@
 package com.blueteam.timekeeping.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -13,34 +18,38 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="TimeCard")
-public class TimeCard extends ModelBase {
+public class TimeCard  {
+    @Id
+    @Column(name="timecard_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int timecard_id;
+    
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
+	
 	@ManyToOne
-	@JoinColumn(name="id", nullable = false, insertable=false, updatable=false)
+	@JoinColumn(name = "id", nullable = false)
 	private Employee employee;
-	private Date startTime;
-	private Date endTime;
 	
 	public Employee getEmployee() {
 		return employee;
 	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+	public void setEmployee(Employee emp) {
+		this.employee= emp;
 	}
-
-	public Date getStartTime() {
+	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(LocalDateTime startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public LocalDateTime getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
+	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
 	}
 
