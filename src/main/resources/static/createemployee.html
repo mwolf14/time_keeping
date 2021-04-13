@@ -1,2 +1,37 @@
-<h1>Employee ready to be created</h1>
-<p>this page should contain all the sign up fields.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Employee Account</title>
+    <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" />
+</head>
+<body>
+<!-- This is served by default from the server -->
+<form action="action_page.php">
+  <div class="container">
+    <h1>Create Employee Account</h1>
+    <p>Please fill out this form to create an account.</p>
+    <p>Username must be [first initial]+[last name]<br>
+        Example: John Smith = jsmith</p>
+    <hr>
+
+    <label for="username"><b>Username:</b></label>
+    <input type="text" placeholder="Enter Username" name="username" id="username" required>
+
+    <label for="psw"><b>Password:</b></label>
+    <input type="password" placeholder="Enter Password" name="password" id="psw" required>
+
+    <label for="psw-repeat"><b>Repeat Password:</b></label>
+    <input type="password" placeholder="Repeat Password" name="repassword" id="psw-repeat" required>
+    <hr>
+
+    <button type="submit" class="registerbtn" href="account.html">Register</button>
+  </div>
+
+  <div class="container signin">
+    <p>Already have an account? <a href="index.html">Sign in</a>.</p>
+  </div>
+</form>
+
+</body>
+</html>
