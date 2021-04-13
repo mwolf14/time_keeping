@@ -1,8 +1,11 @@
 package com.blueteam.timekeeping.controllers;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.TimeCardRepository;
 
 @Controller
@@ -62,6 +66,9 @@ public class TimeCardController {
 		if (msgs == null) {
 			return "index";
 		}
+		/*param should boil down to:
+		 * 
+		 */
 		
 		return "editrecord";
 	}

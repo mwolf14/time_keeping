@@ -1,5 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Employee Time Login</title>
@@ -13,15 +16,16 @@
         <section>
           <label for="myName">Username: </label>
           <input type="text" name="myName" id="myName" required>
-        </section><br>
+        </section>
         <section>
-          <label for="password">Password: </label>
+        	<p th:text="${error}"></p>
+          <label for="password">Password</label>
           <input type="text" name="password" id="password" required>
-        </section><br>
-        <input type="submit" id="mySubmit" href="account.html" value="Login">
-      </form><br>
+        </section>
+        <input type="submit" id="mySubmit" value="Login">
+      </form>
     <b>
-      <a class="button" href="/createemployee.html">Sign Up</a> &nbsp;
+      <a class="button" href="/createemployee">Sign Up</a> &nbsp;
       <a class="button" href="/finduser">Forgot password or username?</a>
     </b>
 </nav>

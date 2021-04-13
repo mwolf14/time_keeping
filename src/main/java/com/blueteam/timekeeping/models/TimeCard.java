@@ -52,6 +52,12 @@ public class TimeCard  {
 	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
 	}
+	public int getTimeCardId() {
+		return this.timecard_id;
+	}
+	public void setTimeCardId(int id) {
+		this.timecard_id=id;
+	}
 
 	public TimeCard() {
 		// TODO Auto-generated constructor stub
