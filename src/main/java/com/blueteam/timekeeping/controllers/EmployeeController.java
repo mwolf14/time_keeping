@@ -2,12 +2,16 @@ package com.blueteam.timekeeping.controllers;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.blueteam.timekeeping.models.Employee;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
@@ -25,8 +29,9 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/createemployee")
-	public String CreatEmployee(@RequestBody Employee emp, Model model){	
-		String firstInit = emp.getFirstName().substring(0, 1);
+	public String CreatEmployee( @RequestBody Employee emp, Model model){
+		//this needs to work with map not the incoming model base..... fix me
+		char firstInit = emp.getFirstName().charAt(0);
 		String lastName = emp.getLastName();
 		String userName = firstInit + lastName;
 		List<Employee> employees = empRepo.findAll();
@@ -46,8 +51,8 @@ public class EmployeeController {
 				}
 			}
 		}
+		
 		emp.setUserName((currentNum == 0)? userName : userName + currentNum);
-		System.out.println(emp.getIsSupervisor());
 		empRepo.save(emp);
 		empRepo.flush();
 		model.addAttribute("userName",emp.getUserName());
