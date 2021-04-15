@@ -29,8 +29,9 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/createemployee")
-	public String CreatEmployee(@RequestBody Employee emp, Model model){	
-		String firstInit = emp.getFirstName().substring(0, 1);
+	public String CreatEmployee( @RequestBody Employee emp, Model model){
+		//this needs to work with map not the incoming model base..... fix me
+		char firstInit = emp.getFirstName().charAt(0);
 		String lastName = emp.getLastName();
 		String userName = firstInit + lastName;
 		List<Employee> employees = empRepo.findAll();
@@ -50,8 +51,8 @@ public class EmployeeController {
 				}
 			}
 		}
+		
 		emp.setUserName((currentNum == 0)? userName : userName + currentNum);
-		System.out.println(emp.getIsSupervisor());
 		empRepo.save(emp);
 		empRepo.flush();
 		model.addAttribute("userName",emp.getUserName());
