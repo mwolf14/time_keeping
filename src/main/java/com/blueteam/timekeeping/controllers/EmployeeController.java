@@ -29,10 +29,11 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/createemployee")
-	public String CreatEmployee( @RequestBody Employee emp, Model model){
+	public String CreatEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
 		//this needs to work with map not the incoming model base..... fix me
-		char firstInit = emp.getFirstName().charAt(0);
-		String lastName = emp.getLastName();
+		try {
+		char firstInit = user.get("firstName").charAt(0);
+		String lastName = user.get("lastName");
 		String userName = firstInit + lastName;
 		List<Employee> employees = empRepo.findAll();
 		int currentNum = 0;
@@ -51,12 +52,18 @@ public class EmployeeController {
 				}
 			}
 		}
-		
-		emp.setUserName((currentNum == 0)? userName : userName + currentNum);
-		empRepo.save(emp);
+		Employee newEmp = new Employee();
+		newEmp.setUserName((currentNum == 0)? userName : userName + currentNum);
+		newEmp.setPassword(user.get("password"));
+		newEmp.setFirstName(user.get("firstName"));
+		newEmp.setLastName(user.get("lastName"));
+		empRepo.save(newEmp);
 		empRepo.flush();
-		model.addAttribute("userName",emp.getUserName());
+		model.addAttribute("userName",newEmp.getUserName());
 		return "employeecreated";
+		}catch(Exception ex) {
+			return ex.toString();
+		}
 	}
 	@GetMapping("/retrieveallusers")
 	public String RetrieveAll(Model model){
