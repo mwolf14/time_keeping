@@ -65,4 +65,11 @@ public class EmployeeController {
 		return "retrieveallusers" ;
 	}
 	
+	@PostMapping("/finduser")
+	public String RetrieveUser( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
+		//TODO find user by first name last name
+		return "recoveremployee";
+		
+	}
+	
 }
