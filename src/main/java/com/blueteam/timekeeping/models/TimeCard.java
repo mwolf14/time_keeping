@@ -26,6 +26,7 @@ public class TimeCard  {
     
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
+	private boolean isOpen;
 	
 	@ManyToOne
 	@JoinColumn(name = "id", nullable = false)
@@ -43,6 +44,7 @@ public class TimeCard  {
 
 	public void setStartTime(LocalDateTime startTime) {
 		this.startTime = startTime;
+		this.isOpen = true;
 	}
 
 	public LocalDateTime getEndTime() {
@@ -51,12 +53,16 @@ public class TimeCard  {
 
 	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
+		this.isOpen = false;
 	}
 	public int getTimeCardId() {
 		return this.timecard_id;
 	}
 	public void setTimeCardId(int id) {
 		this.timecard_id=id;
+	}
+	public boolean getIsOpen() {
+		return this.isOpen;
 	}
 
 	public TimeCard() {
