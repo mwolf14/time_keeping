@@ -25,8 +25,8 @@ public class Employee extends Person {
 	private boolean approved;
 	private boolean supervisor;
 	
-	@OneToMany
-	@JoinColumn(name="timecard_id")
+	@OneToMany(cascade = {CascadeType.ALL})
+	//@JoinColumn(name="timecard_id")
 	private List<TimeCard> timeCards = new ArrayList<>();
 	
 	public String getUserName() {

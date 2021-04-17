@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.blueteam.timekeeping.models.Employee;
+import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
 
 @Controller
@@ -33,6 +34,7 @@ public class LoginController {
 		try {
 		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
 		//emp.setRecId(existingEmployee.getRecId());
+		List<TimeCard> timeCards = existingEmployee.getTimeCards();
 		Employee emp = new Employee();
 		String passedInPassword = user.get("password");
 		emp.setPassword(passedInPassword);
@@ -46,7 +48,17 @@ public class LoginController {
 				 msgs.add(1, existingEmployee.getUserName());
 				 msgs.add(2, existingEmployee.getIsSupervisor()+"");
 				request.getSession().setAttribute("Session_Info", msgs);
-			}		
+			}
+			for (int i = 0; i<timeCards.size(); i++) {
+				if (timeCards.get(i).getIsOpen()) {
+					model.addAttribute("href", "/clockout");
+					model.addAttribute("btnText", "Clock Out");
+				}
+			}
+			if(!model.containsAttribute("href")) {
+				model.addAttribute("href", "/clockin");
+				model.addAttribute("btnText", "Clock In");
+			}
 			if (existingEmployee.getIsSupervisor())
 			{ 
 				return "manager";
