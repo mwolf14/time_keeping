@@ -104,10 +104,29 @@ public class TimeCardController {
 		return destinationPage;	
 	}
 	
-	@PostMapping(path="/clockout")
-	@ResponseStatus(HttpStatus.OK)
-	public void ClockOut(HttpServletRequest request) {
-		
-	
+	@GetMapping(path="/clockout")
+	public String ClockOut(Model model, HttpServletRequest request) {
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		if (msgs == null) {
+			model.addAttribute("error", "Please Log into the system");
+			return "index";
+		}
+		int test = Integer.parseInt(msgs.get(0));		
+		Optional<Employee> emp = empRepo.findById(test);
+		if (emp != null) {
+			Employee employee = emp.get();
+			List<TimeCard> timeCards = employee.getTimeCards();
+			for(int i = 0; i< timeCards.size(); i++){
+				if (timeCards.get(i).getIsOpen()) {
+					timeCards.get(i).setEndTime(LocalDateTime.now());
+					empRepo.saveAndFlush(employee);
+				}
+			}
+			model.addAttribute("href", "/clockin");
+			model.addAttribute("btnText", "Clock In");
+		}
+		String destinationPage = (msgs.get(2) == "true")? "manager": "employee";
+		return destinationPage;
 	}
 }
