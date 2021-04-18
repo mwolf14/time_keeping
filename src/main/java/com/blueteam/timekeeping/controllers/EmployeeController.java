@@ -1,5 +1,10 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: this controller will handle creation of a new employee, and retrieving username 
+*/
 package com.blueteam.timekeeping.controllers;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +71,14 @@ public class EmployeeController {
 		}
 	}
 	@GetMapping("/retrieveallusers")
-	public String RetrieveAll(Model model){
+	public String RetrieveAll(Model model, HttpServletRequest request){
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		if ( msgs == null) {
+			return "index";
+		} else if (msgs.get(3) != "manager") {
+			return "forbiden";
+		}
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
 		return "retrieveallusers" ;

@@ -1,3 +1,9 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: Base for the POJO's in the is class
+ * Rev History: 
+ * 
+*/
 package com.blueteam.timekeeping.models;
 
 import javax.persistence.GeneratedValue;

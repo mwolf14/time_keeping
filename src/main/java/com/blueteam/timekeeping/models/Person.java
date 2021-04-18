@@ -1,3 +1,9 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: Base for all human's in this project. Extends ModelBase
+ * Rev History: 
+ * 
+*/
 package com.blueteam.timekeeping.models;
 
 import java.time.LocalDate;

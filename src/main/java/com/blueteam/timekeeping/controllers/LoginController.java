@@ -1,6 +1,12 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: this controller handles loggin into and out of the system 
+*/
 package com.blueteam.timekeeping.controllers;
 
 import java.awt.PageAttributes.MediaType;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +14,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,7 +33,11 @@ import com.blueteam.timekeeping.repositories.EmployeeRepository;
 public class LoginController {
 	@Autowired
 	private EmployeeRepository empRepo;
-
+	//this is in the custom properties for this application
+	//private String maxShift;	
+	//long max =(long) Double.parseDouble(maxShift);
+	//above is a failed attempt to read the application properties. need to revisit when I have time
+	private long max = (long).05;
 
 	
 	@PostMapping(path="/login")
@@ -51,13 +63,30 @@ public class LoginController {
 			}
 			for (int i = 0; i<timeCards.size(); i++) {
 				if (timeCards.get(i).getIsOpen()) {
-					model.addAttribute("href", "/clockout");
-					model.addAttribute("btnText", "Clock Out");
+					//get the time now. get the time the ticket was opened. if the time is greater then 12 hours add a warning to the model to allow the user to go correct it
+					LocalDateTime now = LocalDateTime.now();
+					LocalDateTime started = timeCards.get(i).getStartTime();
+					Duration duration = Duration.between(now, started);
+					System.out.println(duration.toHours());
+					if (duration.toHours()<max) {
+						model.addAttribute("href", "/clockout");
+						model.addAttribute("btnText", "Clock Out");
+							
+					} else {
+						//this should update the database to show that the ticket is completed, but it was completed by the system not the employee
+
+						
+						timeCards.get(i).setEndTime(started.plusHours(max));
+						timeCards.get(i).setClosedBySystem();
+						model.addAttribute("problemTicket", true);
+						empRepo.save(existingEmployee);
+					}
 				}
 			}
 			if(!model.containsAttribute("href")) {
 				model.addAttribute("href", "/clockin");
 				model.addAttribute("btnText", "Clock In");
+				
 			}
 			if (existingEmployee.getIsSupervisor())
 			{ 

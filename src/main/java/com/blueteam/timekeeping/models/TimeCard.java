@@ -1,3 +1,10 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: DOES NOT EXTEND MODELBASE!!!. This is the model for the timecard. Time cards appear in list held by employees.
+ * Rev History: 
+ * 
+*/
+
 package com.blueteam.timekeeping.models;
 
 import java.time.LocalDateTime;
@@ -27,6 +34,7 @@ public class TimeCard  {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private boolean isOpen;
+	private boolean closedBySystem = false;
 	
 	@ManyToOne
 	@JoinColumn(name = "id", nullable = false)
@@ -65,6 +73,9 @@ public class TimeCard  {
 		return this.isOpen;
 	}
 
+	public void setClosedBySystem() {
+		this.closedBySystem = true;
+	}
 	public TimeCard() {
 		// TODO Auto-generated constructor stub
 	}

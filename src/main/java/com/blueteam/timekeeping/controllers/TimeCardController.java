@@ -1,3 +1,7 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: get timecards for all employees, single employees, or create/complete a time card 
+*/
 package com.blueteam.timekeeping.controllers;
 
 import java.time.LocalDateTime;

@@ -1,3 +1,9 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: POJO for the employee. controls the shape of the database table. Extends Person
+ * Rev History: 
+ * 
+*/
 package com.blueteam.timekeeping.models;
 
 import java.security.MessageDigest;
