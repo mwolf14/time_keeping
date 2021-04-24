@@ -1,8 +1,8 @@
 /* Author: Matt Wolf
  * Date: 4/17/21
- * Desc: Base for the POJO's in the is class
+ * Desc: Base for the base for models created with id
  * Rev History: 
- * 
+ *  V0.1.0
 */
 package com.blueteam.timekeeping.models;
 

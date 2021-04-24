@@ -1,6 +1,6 @@
 /* Author: Matt Wolf
  * Date: 4/17/21
- * Desc: this controller handles loggin into and out of the system 
+ * Desc: this controller handles login into and out of the system 
 */
 package com.blueteam.timekeeping.controllers;
 
@@ -45,6 +45,9 @@ public class LoginController {
 		//get user 
 		try {
 		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
+		if (!existingEmployee.isApproved()) {
+			return "problemwithaccount";
+		}
 		//emp.setRecId(existingEmployee.getRecId());
 		List<TimeCard> timeCards = existingEmployee.getTimeCards();
 		Employee emp = new Employee();
@@ -61,6 +64,7 @@ public class LoginController {
 				 msgs.add(2, existingEmployee.getIsSupervisor()+"");
 				request.getSession().setAttribute("Session_Info", msgs);
 			}
+			//this has no business being here and needs to be moved into a service
 			for (int i = 0; i<timeCards.size(); i++) {
 				if (timeCards.get(i).getIsOpen()) {
 					//get the time now. get the time the ticket was opened. if the time is greater then 12 hours add a warning to the model to allow the user to go correct it
@@ -73,9 +77,7 @@ public class LoginController {
 						model.addAttribute("btnText", "Clock Out");
 							
 					} else {
-						//this should update the database to show that the ticket is completed, but it was completed by the system not the employee
-
-						
+						//this should update the database to show that the ticket is completed, but it was completed by the system not the employee	
 						timeCards.get(i).setEndTime(started.plusHours(max));
 						timeCards.get(i).setClosedBySystem();
 						model.addAttribute("problemTicket", true);

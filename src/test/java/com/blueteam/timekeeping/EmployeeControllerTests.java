@@ -41,7 +41,6 @@ public class EmployeeControllerTests {
 		mockEmployee.setId(1);
 		mockEmployee.setIsSupervisor(true);
 		mockEmployee.setUserName("JDoe");
-		mockEmployee.setDob(LocalDate.now());
 		mockEmployee.setPassword("password");
 		JSONObject payload = new JSONObject();
 		payload.wrap(mockEmployee);

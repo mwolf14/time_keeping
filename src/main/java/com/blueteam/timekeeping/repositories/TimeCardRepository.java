@@ -1,3 +1,10 @@
+/* Author: Matt Wolf
+ * Date: 4/17/21
+ * Desc: TimeCardRepository extends the JpaRepository to handle all standard CRUD operations 
+ * Revision History:
+ * 	V0.1.0
+*/
+
 package com.blueteam.timekeeping.repositories;
 
 import com.blueteam.timekeeping.models.Employee;

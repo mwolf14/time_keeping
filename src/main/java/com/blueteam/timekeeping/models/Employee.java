@@ -1,7 +1,7 @@
 /* Author: Matt Wolf
  * Date: 4/17/21
  * Desc: POJO for the employee. controls the shape of the database table. Extends Person
- * Rev History: 
+ * Rev History: V0.1.0 
  * 
 */
 package com.blueteam.timekeeping.models;
@@ -88,5 +88,13 @@ public class Employee extends Person {
 	
 	public Employee() {
 		super();		
+	}
+
+	public boolean isApproved() {
+		return approved;
+	}
+
+	public void setApproved(boolean approved) {
+		this.approved = approved;
 	}
 }

@@ -62,6 +62,11 @@ public class EmployeeController {
 		newEmp.setPassword(user.get("password"));
 		newEmp.setFirstName(user.get("firstName"));
 		newEmp.setLastName(user.get("lastName"));
+		//this needs to be deleted for production
+		if (!user.get("supervisor").isEmpty()) {
+			newEmp.setIsSupervisor((user.get("supervisor") == "true")? true: false);
+			newEmp.setApproved((user.get("approved") == "true")? true: false);
+		}
 		empRepo.save(newEmp);
 		empRepo.flush();
 		model.addAttribute("userName",newEmp.getUserName());
@@ -70,6 +75,7 @@ public class EmployeeController {
 			return ex.toString();
 		}
 	}
+	
 	@GetMapping("/retrieveallusers")
 	public String RetrieveAll(Model model, HttpServletRequest request){
 		@SuppressWarnings("unchecked")
@@ -88,7 +94,11 @@ public class EmployeeController {
 	public String RetrieveUser( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
 		//TODO find user by first name last name
 		return "recoveremployee";
-		
 	}
 	
+	@PostMapping("/updatepassword")
+	public String UpdatePassword( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
+		//TODO take a user name and current password, then update to the new password
+		return "recoveremployee";
+	}
 }

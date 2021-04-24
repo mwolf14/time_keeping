@@ -1,8 +1,10 @@
 /* Author: Matt Wolf
  * Date: 4/17/21
- * Desc: DOES NOT EXTEND MODELBASE!!!. This is the model for the timecard. Time cards appear in list held by employees.
- * Rev History: 
- * 
+ * Desc: DOES NOT EXTEND MODELBASE!!!. 
+ * 	This is the model for the timecard. Time cards appear in list held by employees. 
+ * 	Hibernate was having a problem with mapping of ID's if they had the same "id" name as everything else..
+ * Revision History: 
+ * 	V0.2.0
 */
 
 package com.blueteam.timekeeping.models;
@@ -35,10 +37,12 @@ public class TimeCard  {
 	private LocalDateTime endTime;
 	private boolean isOpen;
 	private boolean closedBySystem = false;
+	private boolean needsApproved = false;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name = "id", nullable = false)
 	private Employee employee;
+	
 	
 	public Employee getEmployee() {
 		return employee;
@@ -46,6 +50,7 @@ public class TimeCard  {
 	public void setEmployee(Employee emp) {
 		this.employee= emp;
 	}
+	*/
 	public LocalDateTime getStartTime() {
 		return startTime;
 	}

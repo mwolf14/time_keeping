@@ -97,7 +97,7 @@ public class TimeCardController {
 		if (emp != null) {
 			Employee employee = emp.get();
 			TimeCard timecard = new TimeCard();
-			timecard.setEmployee(employee);
+			//timecard.setEmployee(employee);
 			timecard.setStartTime(LocalDateTime.now());
 			employee.addTimeCard(timecard);
 			empRepo.saveAndFlush(employee);

@@ -2,7 +2,7 @@
  * Date: 4/17/21
  * Desc: Base for all human's in this project. Extends ModelBase
  * Rev History: 
- * 
+ * V0.1.0 
 */
 package com.blueteam.timekeeping.models;
 
@@ -16,7 +16,7 @@ public abstract class Person extends ModelBase {
 	//fields
 	private String firstName;
 	private String lastName;
-	private LocalDate dob;
+	
 	
 	public String getFirstName() {
 		return firstName;
@@ -31,14 +31,6 @@ public abstract class Person extends ModelBase {
 
 	public String getLastName() {
 		return lastName;
-	}
-	
-	public LocalDate getDob() {
-		return dob;
-	}
-
-	public void setDob(LocalDate dob) {
-		this.dob = dob;
 	}
 
 	//empty constructor
