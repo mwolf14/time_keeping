@@ -1,0 +1,341 @@
+{
+	"info": {
+		"_postman_id": "c569690e-0eae-4e69-b8d7-c2a9ea5e3bb9",
+		"name": "time-keeping",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Employee Pass",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Create Employee pass', function(){\r",
+							"    let content = pm.response.text();\r",
+							"    if(content.includes(\"JDoe\")){\r",
+							"        return true;\r",
+							"    } else{\r",
+							"        return false;\r",
+							"    };\r",
+							"    \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/createemployee?firstName=John&lastName=Doe&password=password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"createemployee"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "John"
+						},
+						{
+							"key": "lastName",
+							"value": "Doe"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log Employee in Pass",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Log Employee In pass', function(){\r",
+							"    let content = pm.response.text();\r",
+							"    if(content.includes(\"Clock In\")){\r",
+							"        return true;\r",
+							"    } else{\r",
+							"        return false;\r",
+							"    };\r",
+							"    \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n          ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login?myName=JDoe&password=password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "myName",
+							"value": "JDoe"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clock Employee in Pass",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Log Employee In pass', function(){\r",
+							"    let content = pm.response.text();\r",
+							"    if(content.includes(\"Clock Out\")){\r",
+							"        return true;\r",
+							"    } else{\r",
+							"        return false;\r",
+							"    };  \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n          ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/clockin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clockin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clock Employee Out Pass",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Log Employee In pass', function(){\r",
+							"    let content = pm.response.text();\r",
+							"    if(content.includes(\"Clock In\")){\r",
+							"        return true;\r",
+							"    } else{\r",
+							"        return false;\r",
+							"    };  \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n          ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/clockout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"clockout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log Employee in Fail username",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Log in Fail bad username', function(){\r",
+							"    let content = pm.response.text();\r",
+							"    if(content.includes(\"User name not found\")){\r",
+							"        return true;\r",
+							"    } else{\r",
+							"        return false;\r",
+							"    };\r",
+							"    \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n          ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login?myName=NotAUser&password=password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "myName",
+							"value": "NotAUser"
+						},
+						{
+							"key": "password",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log Employee in Fail password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Log Employee In pass', function(){\r",
+							"    let content = pm.response.text();\r",
+							"    if(content.includes(\"Password is Invalid\")){\r",
+							"        return true;\r",
+							"    } else{\r",
+							"        return false;\r",
+							"    };  \r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n          ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login?myName=JDoe&password=Badpassword",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "myName",
+							"value": "JDoe"
+						},
+						{
+							"key": "password",
+							"value": "Badpassword"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
