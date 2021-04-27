@@ -9,9 +9,11 @@ Version: 0.1.0
 /*seed values for testing*/
 
 /*seed values for Deployment*/
+
 INSERT INTO public.employees(
 	id, first_name, last_name, approved, password, supervisor, user_name)
 	VALUES (0,'Dave','Hawkins', true, 'passwordpass', true,'admin');
+
 
 
 /* create the audit log table and trigger*/
