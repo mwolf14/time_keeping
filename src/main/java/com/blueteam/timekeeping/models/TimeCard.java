@@ -26,7 +26,7 @@ import com.blueteam.timekeeping.models.ModelBase;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name="TimeCard")
+@Table(name="TimeCards")
 public class TimeCard  {
     @Id
     @Column(name="timecard_id")
@@ -38,6 +38,7 @@ public class TimeCard  {
 	private boolean isOpen;
 	private boolean closedBySystem = false;
 	private boolean needsApproved = false;
+	private int approvedBy;
 	
 	/*@ManyToOne
 	@JoinColumn(name = "id", nullable = false)
@@ -56,8 +57,14 @@ public class TimeCard  {
 	}
 
 	public void setStartTime(LocalDateTime startTime) {
-		this.startTime = startTime;
-		this.isOpen = true;
+		if (this.isOpen) {
+			this.startTime = startTime;
+			this.isOpen = true;
+		} else {
+			this.startTime = startTime;
+			this.needsApproved = true;
+		}
+		
 	}
 
 	public LocalDateTime getEndTime() {
@@ -65,9 +72,24 @@ public class TimeCard  {
 	}
 
 	public void setEndTime(LocalDateTime endTime) {
+		if (this.isOpen) {
 		this.endTime = endTime;
 		this.isOpen = false;
+		} else {
+			//this branch will only be reached on an edit of the endtime
+			this.endTime =endTime;
+			this.needsApproved = true;
+		}
 	}
+	
+	public boolean getNeedsApproved() {
+		return this.needsApproved;
+	}
+	
+	public void Approve() {
+		this.needsApproved = false;
+	}
+	
 	public int getTimeCardId() {
 		return this.timecard_id;
 	}
@@ -83,6 +105,22 @@ public class TimeCard  {
 	}
 	public TimeCard() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isClosedBySystem() {
+		return closedBySystem;
+	}
+
+	public void setClosedBySystem(boolean closedBySystem) {
+		this.closedBySystem = closedBySystem;
+	}
+
+	public int getApprovedBy() {
+		return approvedBy;
+	}
+
+	public void setApprovedBy(int approvedBy) {
+		this.approvedBy = approvedBy;
 	}
 
 }

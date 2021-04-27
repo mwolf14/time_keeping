@@ -27,12 +27,18 @@ import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
 import com.blueteam.timekeeping.repositories.TimeCardRepository;
 
+import services.TimeCardService;
+
 @Controller
 public class TimeCardController {
+	/*
 	@Autowired
-	private TimeCardRepository timeCardRepo;
+	private TimeCardService tcService;
+	*/
 	@Autowired
 	private EmployeeRepository empRepo;
+	@Autowired
+	private TimeCardRepository timeCardRepo;
 	
 	@GetMapping("/gettimecards")
 	public String getTimeCards(Model model, HttpServletRequest request) {
@@ -79,8 +85,15 @@ public class TimeCardController {
 		/*param should boil down to:
 		 * 
 		 */
+		
+		Optional<Employee> emp = empRepo.findById(Integer.parseInt(msgs.get(0)));
+		if (emp != null) {
+			Employee employee = emp.get();
+		
+		}
 		return "editrecord";
 	}
+	
 	@GetMapping(path="/clockin")
 	public String ClockIn(Model model, HttpServletRequest request) {
 		String destinationPage;
