@@ -146,4 +146,11 @@ public class TimeCardController {
 		String destinationPage = (msgs.get(2) == "true")? "manager": "employee";
 		return destinationPage;
 	}
+	
+	@GetMapping(path="/correcttimeticket")
+	public String CorrectTimeTicket(Model model, HttpServletRequest request) {
+		
+		
+		return "editpage";
+	}
 }
