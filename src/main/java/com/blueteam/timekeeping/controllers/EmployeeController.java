@@ -12,17 +12,23 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.blueteam.timekeeping.models.Employee;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 
 @Controller
+@CrossOrigin
 public class EmployeeController {
 
 	@Autowired
@@ -33,12 +39,12 @@ public class EmployeeController {
 		return "createEmployee";
 	}
 	
-	@PostMapping("/createemployee")
+	@PostMapping(value="/createemployee", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String CreatEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
 		//this needs to work with map not the incoming model base..... fix me
 		try {
-		char firstInit = user.get("firstName").charAt(0);
-		String lastName = user.get("lastName");
+		char firstInit = user.get("firstName").toString().charAt(0);
+		String lastName = user.get("lastName").toString();
 		String userName = firstInit + lastName;
 		List<Employee> employees = empRepo.findAll();
 		int currentNum = 0;
@@ -59,14 +65,10 @@ public class EmployeeController {
 		}
 		Employee newEmp = new Employee();
 		newEmp.setUserName((currentNum == 0)? userName : userName + currentNum);
-		newEmp.setPassword(user.get("password"));
-		newEmp.setFirstName(user.get("firstName"));
-		newEmp.setLastName(user.get("lastName"));
+		newEmp.setPassword(user.get("password").toString());
+		newEmp.setFirstName(user.get("firstName").toString());
+		newEmp.setLastName(user.get("lastName").toString());
 		//this needs to be deleted for production
-		if (!user.get("supervisor").isEmpty()) {
-			newEmp.setIsSupervisor((user.get("supervisor") == "true")? true: false);
-			newEmp.setApproved((user.get("approved") == "true")? true: false);
-		}
 		empRepo.save(newEmp);
 		empRepo.flush();
 		model.addAttribute("userName",newEmp.getUserName());
@@ -80,11 +82,11 @@ public class EmployeeController {
 	public String RetrieveAll(Model model, HttpServletRequest request){
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if ( msgs == null) {
+		/*if ( msgs == null) {
 			return "index";
 		} else if (msgs.get(3) != "manager") {
 			return "forbiden";
-		}
+		}*/
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
 		return "retrieveallusers" ;

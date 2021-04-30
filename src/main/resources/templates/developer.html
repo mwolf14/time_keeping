@@ -1,0 +1,23 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Developer Portal</title>
+    <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" />
+</head>
+<body>
+<!-- This is served by default from the server -->
+<h1>Welcome to the Developer portal</h1>
+<p>First run this seeder....</p>
+<p><a href="/seedemployees">Seed Employees.</a></p>
+<p>It will create 100 approved employees. Then run this one...</p>	
+<p><a href="/seedcards">Seed Timecards.</a></p>
+<p> It will create 100 time tickets for each of the employees</p>
+<p> Then create 10 unapproved employees with this <a href="/seedunapproved"> Seed Unapproved</a></p>
+
+
+</body>
+</html>

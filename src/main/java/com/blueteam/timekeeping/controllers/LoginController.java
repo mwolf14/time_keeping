@@ -44,6 +44,10 @@ public class LoginController {
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user 
 		try {
+			//this is for development only and should be removed
+			if (user.get("myName") == "dev") {
+				return "developer";
+			}
 		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
 		if (!existingEmployee.isApproved()) {
 			return "problemwithaccount";
