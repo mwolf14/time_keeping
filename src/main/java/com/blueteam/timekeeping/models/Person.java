@@ -35,7 +35,6 @@ public abstract class Person extends ModelBase {
 
 	//empty constructor
 	public Person() {
-		// TODO Auto-generated constructor stub
 		super();
 	}
 

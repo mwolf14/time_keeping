@@ -104,7 +104,7 @@ public class TimeCard  {
 		this.closedBySystem = true;
 	}
 	public TimeCard() {
-		// TODO Auto-generated constructor stub
+		// Constructor must be here to generate a bean
 	}
 
 	public boolean isClosedBySystem() {

@@ -4,28 +4,23 @@
 */
 package com.blueteam.timekeeping.controllers;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.blueteam.timekeeping.models.Employee;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
+
 
 @Controller
 @CrossOrigin
@@ -82,20 +77,18 @@ public class EmployeeController {
 	public String RetrieveAll(Model model, HttpServletRequest request){
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		/*if ( msgs == null) {
-			return "index";
-		} else if (msgs.get(3) != "manager") {
-			return "forbiden";
-		}*/
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
 		return "retrieveallusers" ;
 	}
 	
 	@PostMapping("/finduser")
-	public String RetrieveUser( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
-		//TODO find user by first name last name
-		return "recoveremployee";
+	public ResponseEntity<String> RetrieveUser( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
+		List<Employee> empList = empRepo.getAllByLastName(user.get("lastname"));
+		if (empList.size() != 1) {
+			return new ResponseEntity<String>("More then one result", HttpStatus.CONFLICT); 
+		}
+		return	new ResponseEntity<String>(empList.get(0).getUserName(), HttpStatus.OK);	
 	}
 	
 	@PostMapping("/updatepassword")
