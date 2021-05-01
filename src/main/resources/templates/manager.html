@@ -12,6 +12,35 @@
 <!-- This is served by default from the server -->
 <h1>Manager</h1>
 <p>manager logged</p>
-<a href="/gettimecards">Get time cards</a>
+<h2>Time Cards For Approval</h2>
+<table th:each="employee: ${needEditEmployees}">
+        	<tr >
+        		<th th:text="${employee.getFirstName+' '+employee.getLastName}" th:id="${employee.getId}"></th>
+        	</tr>
+        	<tr><td>Start Time<td>
+        	<td>End Time<td></tr>
+        	<tr th:each="timecard: ${employee.getTimeCards}">
+        	<td th:text=${timecard.getStartTime}></td>
+        	<td th:text=${timecard.getEndTime}></td>
+        	<td><button th:id="${employee.getId}" class="approve_timecard_btn">Approve</button></td>
+        	</tr>
+</table>
+
+<!-- use the manager script init function to create the script to make the approve timecard button work-->
+
+<h2>Employees need Approval</h2>
+        <table>
+        	<tr th:each="employee: ${employeeNeedApproved}">
+        		
+        		<td th:text="${employee.getFirstName+' '+employee.getLastName}"></td>
+        		<td><button th:id="${employee.getId}" class="approve_employee_btn">Approve</button></td>
+        	</tr>
+        </table>
+        <a href="/logout"><button >Log Out</button></a>
+        <footer>
+        </footer>
+        <script src="/scripts/jquery.min.js"></script>
+        <script src="/scripts/manager.js"></script> 
 </body>
+
 </html>

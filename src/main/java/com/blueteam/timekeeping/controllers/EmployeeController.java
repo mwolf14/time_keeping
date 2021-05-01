@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.blueteam.timekeeping.models.Employee;
@@ -95,5 +96,15 @@ public class EmployeeController {
 	public String UpdatePassword( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
 		//TODO take a user name and current password, then update to the new password
 		return "recoveremployee";
+	}
+	@GetMapping("/approveemployee/{id}")
+	public ResponseEntity<String> ApproveEmployee(@PathVariable("id") int id){
+		try{
+		Employee emp = empRepo.getOne(id);
+		emp.setApproved(true);
+		return new ResponseEntity("success", HttpStatus.OK);
+		} catch (Exception ex) {
+			return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
+		}
 	}
 }

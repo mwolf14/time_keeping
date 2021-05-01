@@ -88,39 +88,34 @@ public class TimeCardController {
 	}
 	
 	@GetMapping(path="/clockin")
-	public String ClockIn(Model model, HttpServletRequest request) {
-		String destinationPage;
+	public ResponseEntity<String> ClockIn(HttpServletRequest request) {
+		
 		//wrap in try catch
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
 		if (msgs == null) {
-			model.addAttribute("error", "Please Log into the system");
-			return "index";
+			return new ResponseEntity<String>("Must log in", HttpStatus.FORBIDDEN);
 		} 
-		destinationPage = (msgs.get(2) == "true")? "manager": "employee";
 		int test = Integer.parseInt(msgs.get(0));		
 		Optional<Employee> emp = empRepo.findById(test);
 		if (emp != null) {
 			Employee employee = emp.get();
 			TimeCard timecard = new TimeCard();
-			//timecard.setEmployee(employee);
 			timecard.setStartTime(LocalDateTime.now());
 			employee.addTimeCard(timecard);
 			empRepo.saveAndFlush(employee);
-			//timeCardRepo.saveAndFlush(timecard);
-			model.addAttribute("href", "/clockout");
-			model.addAttribute("btnText", "Clock Out");
+			return new ResponseEntity<String>(HttpStatus.OK);
 		}
-		return destinationPage;	
+		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+			
 	}
 	
 	@GetMapping(path="/clockout")
-	public String ClockOut(Model model, HttpServletRequest request) {
+	public ResponseEntity<String> ClockOut(HttpServletRequest request) {
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
 		if (msgs == null) {
-			model.addAttribute("error", "Please Log into the system");
-			return "index";
+			return new ResponseEntity<String>("Must log in", HttpStatus.FORBIDDEN);
 		}
 		int test = Integer.parseInt(msgs.get(0));		
 		Optional<Employee> emp = empRepo.findById(test);
@@ -131,18 +126,17 @@ public class TimeCardController {
 				if (timeCards.get(i).getIsOpen()) {
 					timeCards.get(i).setEndTime(LocalDateTime.now());
 					empRepo.saveAndFlush(employee);
+					return new ResponseEntity<String>(HttpStatus.OK);
 				}
 			}
-			model.addAttribute("href", "/clockin");
-			model.addAttribute("btnText", "Clock In");
 		}
-		String destinationPage = (msgs.get(2) == "true")? "manager": "employee";
-		return destinationPage;
+		
+		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
 	}
+	
 	@GetMapping(path="/correcttimeticket")
 	public String CorrectTimeTicket(Model model, HttpServletRequest request) {
-		
-		
+			
 		return "editpage";
 	}
 }

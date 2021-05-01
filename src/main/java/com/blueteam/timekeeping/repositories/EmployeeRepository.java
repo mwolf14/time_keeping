@@ -11,6 +11,7 @@ package com.blueteam.timekeeping.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.blueteam.timekeeping.models.Employee;
@@ -20,4 +21,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 	Employee findByUserName(String username);
 
 	List<Employee> getAllByLastName(String string);
+
+	List<Employee> getByApprovedFalse();
+	
 }
