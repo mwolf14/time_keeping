@@ -30,6 +30,7 @@ public class Employee extends Person {
 	private String userName;
 	private boolean approved;
 	private boolean supervisor;
+	private boolean active;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
 	//@JoinColumn(name="timecard_id")
@@ -96,5 +97,13 @@ public class Employee extends Person {
 
 	public void setApproved(boolean approved) {
 		this.approved = approved;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

@@ -8,13 +8,13 @@ Desc: add the event listener to the clock in clock out button
 
 
 function clockIn(){
-	$('#clockinbtn').ajax({
+	$.ajax({
 		async: false,
 		type: 'GET',
 		url: "/clockin",
 		success: function(data, status) {
 			let btn = document.createElement('button');
-			btn.id = "clock_out_btn";
+			btn.id = "clockoutbtn";
 			btn.addEventListener("click", clockOut, false);
 			let clockspan = document.getElementById("btn_span");
 			clockspan.childNodes = "";
@@ -27,13 +27,13 @@ function clockIn(){
 }
 
 function clockOut(){
-	$('#clockoutbtn').ajax({
+	$.ajax({
 		async: false,
 		type: 'GET',
 		url: "/clockout",
 		success: function(data, status) {
 			let btn = document.createElement('button');
-			btn.id = "clock_in_btn";
+			btn.id = "clockinbtn";
 			btn.addEventListener("click", clockIn, false);
 			let clockspan = document.getElementById("btn_span");
 			clockspan.childNodes = "";
@@ -55,7 +55,7 @@ function init(){
 
 //eventlisteners for this page
 if (window.addEventListener) {
-	window.addEventListener("load", init, false);
+	document.addEventListener("load", init, false);
 } else if (window.attachEvent) {
-	window.attachEvent("onload",init);
+	document.attachEvent("onload",init);
 }

@@ -1,6 +1,10 @@
 /* Author: Matt Wolf
- * Date: 4/17/21
- * Desc: this controller will handle creation of a new employee, and retrieving username 
+ * Date: 5/2/21
+ * Desc: this controller will handle creation of a new employee, and retrieving username
+ * Rev History:
+ * 4/17/21 - initial creation
+ * 4/27/21 - stubbed methods. Changed signatures to use ajax for some calls
+ * 5/2/21 - refactored functionality into methods 
 */
 package com.blueteam.timekeeping.controllers;
 
@@ -29,12 +33,10 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeRepository empRepo;
-	
 	@GetMapping("/createemployee")
 	public String CreateEmployee() {
 		return "createEmployee";
-	}
-	
+	}	
 	@PostMapping(value="/createemployee", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String CreatEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
 		//this needs to work with map not the incoming model base..... fix me
@@ -73,38 +75,82 @@ public class EmployeeController {
 			return ex.toString();
 		}
 	}
-	
-	@GetMapping("/retrieveallusers")
-	public String RetrieveAll(Model model, HttpServletRequest request){
+	@GetMapping("/retrieveallemployees")
+	public ResponseEntity<String> RetrieveAll(Model model, HttpServletRequest request){
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		if (msgs == null) {
+			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
+		}			
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
-		return "retrieveallusers" ;
+		return new ResponseEntity(employees, HttpStatus.OK);
 	}
-	
-	@PostMapping("/finduser")
-	public ResponseEntity<String> RetrieveUser( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
+	@PostMapping("/findemployee")
+	public ResponseEntity<String> RetrieveEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		if (msgs == null) {
+			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
+		}
 		List<Employee> empList = empRepo.getAllByLastName(user.get("lastname"));
 		if (empList.size() != 1) {
 			return new ResponseEntity<String>("More then one result", HttpStatus.CONFLICT); 
 		}
 		return	new ResponseEntity<String>(empList.get(0).getUserName(), HttpStatus.OK);	
 	}
-	
 	@PostMapping("/updatepassword")
-	public String UpdatePassword( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
-		//TODO take a user name and current password, then update to the new password
-		return "recoveremployee";
+	public ResponseEntity<String> UpdatePassword( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		if (msgs == null) {
+			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
+		}
+		try{
+			Employee emp = empRepo.getOne(Integer.parseInt(user.get("id")));
+			if (emp.getPassword()== user.get("oldpassword"))
+				{
+				emp.setPassword(user.get("newpassword"));
+				return new ResponseEntity("success", HttpStatus.OK);
+				}
+			else {
+				return new ResponseEntity("Old password invalid", HttpStatus.CONFLICT);
+			}
+			
+		} catch (Exception ex) {
+				return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
+		}
+		
 	}
 	@GetMapping("/approveemployee/{id}")
-	public ResponseEntity<String> ApproveEmployee(@PathVariable("id") int id){
+	public ResponseEntity<String> ApproveEmployee(@PathVariable("id") int id, HttpServletRequest request){
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		if (msgs == null) {
+			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
+		}
 		try{
 		Employee emp = empRepo.getOne(id);
 		emp.setApproved(true);
+		emp.setActive(true);
 		return new ResponseEntity("success", HttpStatus.OK);
 		} catch (Exception ex) {
 			return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
 		}
+	}
+	@GetMapping("/deactivateuser/{id}")
+	public ResponseEntity<String> DeactivateEmployee(@PathVariable("id") int id, HttpServletRequest request){
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		if (msgs == null) {
+			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
+		}
+		try{
+			Employee emp = empRepo.getOne(id);
+			emp.setActive(false);
+			return new ResponseEntity("success", HttpStatus.OK);
+			} catch (Exception ex) {
+				return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
+			}
 	}
 }

@@ -18,8 +18,8 @@ INSERT INTO public.employees(
 /*seed values for Deployment*/
 
 INSERT INTO public.employees(
-	id, first_name, last_name, approved, password, supervisor, user_name)
-	VALUES (0,'Dave','Hawkins', true, 'passwordpass', true,'admin');
+	id, first_name, last_name, approved, password, supervisor, user_name, active)
+	VALUES (0,'Dave','Hawkins', true, 'passwordpass', true,'admin', true);
 
 
 /* create the audit log table and trigger*/

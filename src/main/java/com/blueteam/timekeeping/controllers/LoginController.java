@@ -36,10 +36,6 @@ public class LoginController {
 	private EmployeeRepository empRepo;
 	@Autowired
 	private TimeCardRepository timeCardRepo;
-	//this is in the custom properties for this application
-	//private String maxShift;	
-	//long max =(long) Double.parseDouble(maxShift);
-	//above is a failed attempt to read the application properties. need to revisit when I have time
 	private long max = (long).05;
 
 	
@@ -97,38 +93,12 @@ public class LoginController {
 			}
 			if (existingEmployee.getIsSupervisor())
 			{ 
-				
+				//this seed line will need removed, along with the method for seeding
 				seedTimeCardsWithTicketsToApprove();
-				//to make something like this i need a uow.
-				//List<TimeCard> timeCardNeedsApproved = timeCardRepo.getAllByNeedsApprovedTrue();
-				//loop to test results
-				
-				//making it work with java loops for the time being
-				List<Employee> allEmployees = empRepo.findAll();
-				List<Employee> needEditEmployees = new ArrayList();
-				for (int i = 0; i < allEmployees.size(); i++) {
-					Employee needEditEmployee = new Employee();
-					needEditEmployee.setId(allEmployees.get(i).getId());
-					needEditEmployee.setFirstName(allEmployees.get(i).getFirstName());
-					needEditEmployee.setLastName(allEmployees.get(i).getLastName());
-					for(int j = 0; j < allEmployees.get(i).getTimeCards().size(); j++) {
-						if ((allEmployees.get(i).getTimeCards()).get(j).getNeedsApproved()) {
-							needEditEmployee.addTimeCard((allEmployees.get(i).getTimeCards()).get(j));
-						}
-					}
-					if (needEditEmployee.getTimeCards().size()!=0) {
-						needEditEmployees.add(needEditEmployee);
-					}
-				}
-				//test
-				for (int i = 0; i< needEditEmployees.size(); i++) {
-					System.out.println((needEditEmployees.get(i)).getFirstName());
-				}
-				
+				List<Employee> needEditEmployees = getListOfEmployeesThatNeedTimeEdits();
 				if (needEditEmployees.size() != 0 ) {
 					model.addAttribute("needEditEmployees",needEditEmployees);
 				}
-				
 				List<Employee> employeeNeedsApproved = empRepo.getByApprovedFalse();
 				for (int i = 0; i< employeeNeedsApproved.size(); i++) {
 					System.out.println(employeeNeedsApproved.get(i).getFirstName() + " " + employeeNeedsApproved.get(i).getLastName());
@@ -149,6 +119,26 @@ public class LoginController {
 			model.addAttribute("error","User name not found.");
 			return "index";
 		}
+	}
+
+	private List<Employee> getListOfEmployeesThatNeedTimeEdits() {
+		List<Employee> allEmployees = empRepo.findAll();
+		List<Employee> needEditEmployees = new ArrayList();
+		for (int i = 0; i < allEmployees.size(); i++) {
+			Employee needEditEmployee = new Employee();
+			needEditEmployee.setId(allEmployees.get(i).getId());
+			needEditEmployee.setFirstName(allEmployees.get(i).getFirstName());
+			needEditEmployee.setLastName(allEmployees.get(i).getLastName());
+			for(int j = 0; j < allEmployees.get(i).getTimeCards().size(); j++) {
+				if ((allEmployees.get(i).getTimeCards()).get(j).getNeedsApproved()) {
+					needEditEmployee.addTimeCard((allEmployees.get(i).getTimeCards()).get(j));
+				}
+			}
+			if (needEditEmployee.getTimeCards().size()!=0) {
+				needEditEmployees.add(needEditEmployee);
+			}
+		}
+		return needEditEmployees;
 	}
 	
 	private void seedTimeCardsWithTicketsToApprove() {
