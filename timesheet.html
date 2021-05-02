@@ -1,0 +1,80 @@
+<html ng-app="timesheet">
+
+<head>
+  <title>Super Simple Timesheet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/260783/bootstrap.min.css">
+  <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/260783/style.css">
+
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/260783/angular.min.js"></script>
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/260783/angular-animate.min.js"></script>
+  <!--<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/260783/app.js"></script>-->
+</head>
+
+<body>
+  <div ng-controller="FormController">
+
+    <section id="section-timesheet" ng-class="{ scale: success }">
+
+      <h1>Submit Your Timesheet</h1>
+
+      <div class="inner">
+
+        <form name="formTimesheet" novalidate>
+          <label>Email:</label>
+          <input ng-model="ele.email" type="email" placeholder="artist@moviemakr.com" required>
+
+          <label>Time:</label>
+          <input ng-model="ele.time.hours" type="number" min="0" placeholder="hours" required> <span>hours</span>
+          <input ng-model="ele.time.mins" type="number" min="0" max="59" placeholder="minutes" required> <span>minutes</span>
+
+          <label>Message <span>(optional)</span></label>
+          <textarea ng-model="ele.msg"></textarea>
+
+          <div id="projects">
+            <label>Types of work: <span>(select all that apply)</span></label>
+            <select id="dropDown" name="dropDown" ng-model="selectedItems" multiple required>
+              <option ng-repeat="type in ele.selectTypes" value="{{type}}">{{type}}</option>
+            </select>
+
+            <div id="create-new">
+              <input type="text" ng-model="newType" placeholder="add new type of work">
+              <button class="button" type="button" ng-click="createNew(newType)">Add New</button>
+            </div>
+          </div>
+
+          <div id="buttons">
+            <button class="button grey flex-item" type="reset" ng-click="clearInfo()">Clear</button>
+            <input ng-init="success = false" class="button flex-item" type="button" value="Next" ng-click="saveForm()" ng-disabled="formTimesheet.$invalid">
+          </div>
+        </form>
+
+      </div>
+
+      <div class="overlay" ng-class="{ animateShow:clicked }">
+        <div class="spinner">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="section-thankyou" ng-class="{ hidden:!success, shown: success }">
+      <h1>Timesheet Submitted</h1>
+
+      <div class="inner">
+
+        <p>Thank you <span class="green">{{ele.email}}</span>.</p>
+        <p>You have logged <span class="green">{{ele.time.hours}}</span> hr and <span class="green">{{ele.time.mins}}</span> min of work today.</p>
+
+        <button class="button" type="reset" ng-click="startAgain()">Start Again</button>
+
+      </div>
+    </section>
+
+  </div>
+</body>
+
+</html>
