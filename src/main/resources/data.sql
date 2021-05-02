@@ -4,6 +4,13 @@ Date: 4/25/21
 Desc: This is the needed sql that runs once hibernate has created the tables based on the models found in 
 the package com.blueteam.timekeeping.models (note abstract classes do not generate a table)
 Version: 0.1.0
+
+
+INSERT INTO public.employees(
+	id, first_name, last_name, approved, password, supervisor, user_name)
+	VALUES (1,'Matt','Wolf', true, 'passwordpass', true,'dev');
+
+
 */
 
 /*seed values for testing*/
@@ -13,9 +20,6 @@ Version: 0.1.0
 INSERT INTO public.employees(
 	id, first_name, last_name, approved, password, supervisor, user_name)
 	VALUES (0,'Dave','Hawkins', true, 'passwordpass', true,'admin');
-INSERT INTO public.employees(
-	id, first_name, last_name, approved, password, supervisor, user_name)
-	VALUES (1,'Matt','Wolf', true, 'passwordpass', true,'dev');
 
 
 /* create the audit log table and trigger*/

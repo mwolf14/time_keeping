@@ -27,12 +27,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.blueteam.timekeeping.models.Employee;
 import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
+import com.blueteam.timekeeping.repositories.TimeCardRepository;
 
 @Controller
 @CrossOrigin
 public class LoginController {
 	@Autowired
 	private EmployeeRepository empRepo;
+	@Autowired
+	private TimeCardRepository timeCardRepo;
 	//this is in the custom properties for this application
 	//private String maxShift;	
 	//long max =(long) Double.parseDouble(maxShift);
@@ -42,12 +45,8 @@ public class LoginController {
 	
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
-		//get user 
+		//get user
 		try {
-			//this is for development only and should be removed
-			if (user.get("myName") == "dev") {
-				return "developer";
-			}
 		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
 		if (!existingEmployee.isApproved()) {
 			return "problemwithaccount";
@@ -79,6 +78,7 @@ public class LoginController {
 					if (duration.toHours()<max) {
 						model.addAttribute("href", "/clockout");
 						model.addAttribute("btnText", "Clock Out");
+						model.addAttribute("btnId", "clockoutbtn");
 							
 					} else {
 						//this should update the database to show that the ticket is completed, but it was completed by the system not the employee	
@@ -92,10 +92,50 @@ public class LoginController {
 			if(!model.containsAttribute("href")) {
 				model.addAttribute("href", "/clockin");
 				model.addAttribute("btnText", "Clock In");
+				model.addAttribute("btnId", "clockinbtn");
 				
 			}
 			if (existingEmployee.getIsSupervisor())
 			{ 
+				
+				seedTimeCardsWithTicketsToApprove();
+				//to make something like this i need a uow.
+				//List<TimeCard> timeCardNeedsApproved = timeCardRepo.getAllByNeedsApprovedTrue();
+				//loop to test results
+				
+				//making it work with java loops for the time being
+				List<Employee> allEmployees = empRepo.findAll();
+				List<Employee> needEditEmployees = new ArrayList();
+				for (int i = 0; i < allEmployees.size(); i++) {
+					Employee needEditEmployee = new Employee();
+					needEditEmployee.setId(allEmployees.get(i).getId());
+					needEditEmployee.setFirstName(allEmployees.get(i).getFirstName());
+					needEditEmployee.setLastName(allEmployees.get(i).getLastName());
+					for(int j = 0; j < allEmployees.get(i).getTimeCards().size(); j++) {
+						if ((allEmployees.get(i).getTimeCards()).get(j).getNeedsApproved()) {
+							needEditEmployee.addTimeCard((allEmployees.get(i).getTimeCards()).get(j));
+						}
+					}
+					if (needEditEmployee.getTimeCards().size()!=0) {
+						needEditEmployees.add(needEditEmployee);
+					}
+				}
+				//test
+				for (int i = 0; i< needEditEmployees.size(); i++) {
+					System.out.println((needEditEmployees.get(i)).getFirstName());
+				}
+				
+				if (needEditEmployees.size() != 0 ) {
+					model.addAttribute("needEditEmployees",needEditEmployees);
+				}
+				
+				List<Employee> employeeNeedsApproved = empRepo.getByApprovedFalse();
+				for (int i = 0; i< employeeNeedsApproved.size(); i++) {
+					System.out.println(employeeNeedsApproved.get(i).getFirstName() + " " + employeeNeedsApproved.get(i).getLastName());
+				}
+				if (employeeNeedsApproved.size() != 0 ) {
+					model.addAttribute("employeeNeedApproved",employeeNeedsApproved);
+				}
 				return "manager";
 			}else {
 				return "employee";
@@ -104,15 +144,33 @@ public class LoginController {
 			model.addAttribute("error","Password is Invalid");
 			return "index";
 		}
-		}catch(Exception e){
+		}
+	catch(Exception e){
 			model.addAttribute("error","User name not found.");
 			return "index";
 		}
 	}
 	
+	private void seedTimeCardsWithTicketsToApprove() {
+		Employee emp = empRepo.getOne(0);
+		for (int i = 0; i < 100; i++) {
+			
+			TimeCard tc = new TimeCard();
+			tc.setClosedBySystem();
+			tc.setStartTime(LocalDateTime.now());
+			tc.setEndTime(LocalDateTime.now());
+			
+			tc.needsApproved();
+			tc.isClosedBySystem();
+			emp.addTimeCard(tc);
+		}
+		empRepo.saveAndFlush(emp);
+	}
+
 	@GetMapping(path="/logout")
-	public String Login(Model model, HttpServletRequest request) {
+	public String LogOut(Model model, HttpServletRequest request) {
 		request.getSession().invalidate();
 		return "index";
 	}
+	
 }

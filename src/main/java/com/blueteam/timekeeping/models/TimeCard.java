@@ -35,12 +35,13 @@ public class TimeCard  {
     
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
-	private boolean isOpen;
+	private boolean isOpen = true;
 	private boolean closedBySystem = false;
 	private boolean needsApproved = false;
 	private int approvedBy;
 	
-	/*@ManyToOne
+	/*
+	@ManyToOne
 	@JoinColumn(name = "id", nullable = false)
 	private Employee employee;
 	
@@ -59,7 +60,6 @@ public class TimeCard  {
 	public void setStartTime(LocalDateTime startTime) {
 		if (this.isOpen) {
 			this.startTime = startTime;
-			this.isOpen = true;
 		} else {
 			this.startTime = startTime;
 			this.needsApproved = true;
@@ -86,6 +86,9 @@ public class TimeCard  {
 		return this.needsApproved;
 	}
 	
+	public void needsApproved() {
+		this.needsApproved = true;
+	}
 	public void Approve() {
 		this.needsApproved = false;
 	}
@@ -104,7 +107,7 @@ public class TimeCard  {
 		this.closedBySystem = true;
 	}
 	public TimeCard() {
-		// TODO Auto-generated constructor stub
+		// Constructor must be here to generate a bean
 	}
 
 	public boolean isClosedBySystem() {
