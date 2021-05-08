@@ -7,6 +7,7 @@ package com.blueteam.timekeeping.controllers;
 import java.awt.PageAttributes.MediaType;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -157,13 +158,16 @@ public class LoginController {
 ************************************************************************************************************/
 	private void seedTimeCardsWithTicketsToApprove() {
 		Employee emp = empRepo.getOne(0);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		for (int i = 0; i < 100; i++) {
-			
+			LocalDateTime start = LocalDateTime.now();
+			start.format(formatter);
+			LocalDateTime end = LocalDateTime.now();
+			end.format(formatter);
 			TimeCard tc = new TimeCard();
 			tc.setClosedBySystem();
-			tc.setStartTime(LocalDateTime.now());
-			tc.setEndTime(LocalDateTime.now());
-			
+			tc.setStartTime(start);
+			tc.setEndTime(end);
 			tc.needsApproved();
 			tc.isClosedBySystem();
 			emp.addTimeCard(tc);

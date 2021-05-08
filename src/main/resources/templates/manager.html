@@ -19,10 +19,10 @@
         	</tr>
         	<tr><td>Start Time<td>
         	<td>End Time<td></tr>
-        	<tr th:each="timecard: ${employee.getTimeCards}">
+        	<tr th:each="timecard: ${employee.getTimeCards}" th:id="timecard.getTimeCardId">
         	<td th:text=${timecard.getStartTime}></td>
         	<td th:text=${timecard.getEndTime}></td>
-        	<td><button th:id="${employee.getId}" class="approve_timecard_btn">Approve</button></td>
+        	<td><button th:id="${employee.getId+'_'+timecard.getTimeCardId}" class="approve_timecard_btn">Approve</button></td>
         	</tr>
 </table>
 

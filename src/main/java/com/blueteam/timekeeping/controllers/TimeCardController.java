@@ -5,6 +5,7 @@
 package com.blueteam.timekeeping.controllers;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,10 +102,13 @@ public class TimeCardController {
 		} 
 		int test = Integer.parseInt(msgs.get(0));		
 		Optional<Employee> emp = empRepo.findById(test);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		if (emp != null) {
 			Employee employee = emp.get();
 			TimeCard timecard = new TimeCard();
-			timecard.setStartTime(LocalDateTime.now());
+			LocalDateTime now = LocalDateTime.now();
+			now.format(formatter);
+			timecard.setStartTime(now);
 			employee.addTimeCard(timecard);
 			empRepo.saveAndFlush(employee);
 			return new ResponseEntity<String>(HttpStatus.OK);
@@ -127,7 +131,8 @@ public class TimeCardController {
 			List<TimeCard> timeCards = employee.getTimeCards();
 			for(int i = 0; i< timeCards.size(); i++){
 				if (timeCards.get(i).getIsOpen()) {
-					timeCards.get(i).setEndTime(LocalDateTime.now());
+					LocalDateTime now = LocalDateTime.now();
+					timeCards.get(i).setEndTime(now);
 					empRepo.saveAndFlush(employee);
 					return new ResponseEntity<String>(HttpStatus.OK);
 				}
@@ -136,10 +141,29 @@ public class TimeCardController {
 		
 		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
 	}
-	
-	@GetMapping(path="/correcttimeticket")
-	public String CorrectTimeTicket(Model model, HttpServletRequest request) {
-			
+	//path should contain start end and time card id. we will know the user from session data
+	@GetMapping(path="/correcttimeticket/{}")
+	public String CorrectTimeTicket(@PathVariable("id") String id, HttpServletRequest request) {
+		//path variable will have the employee id concated with timecard id with _
+			String[] ids = id.split("_");
 		return "editpage";
 	}
+	
+	@GetMapping(path="/approvetimecard/{id}&{starttime}&{endtime}")
+	public ResponseEntity<String> ApproveTimeCard(@PathVariable("id") int id,@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request){
+		TimeCard tc = timeCardRepo.getOne(id);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		String sTime = startTime.replace('T', ' ');
+		String eTime = endTime.replace('T', ' ');
+		System.out.println("Start Time is: " + sTime);
+		System.out.println("End Time is: " + eTime);
+		tc.setStartTime(LocalDateTime.parse(sTime, formatter));
+		tc.setEndTime(LocalDateTime.parse(eTime, formatter));
+		timeCardRepo.saveAndFlush(tc);
+		System.out.println("Start Time: " + sTime.toString() + " End Time: " + eTime.toString());
+		//added to make a valid stub
+		return new ResponseEntity<String>("stub", HttpStatus.OK);
+	}
+	
+	
 }

@@ -13,6 +13,7 @@ function approve(){
 		success: function(data, status) {
 			this.onclick = "";
 			this.disable= true;
+			this.display= none;
 			},
 			failure: function(data, status){
 				console.log(data);
@@ -21,11 +22,12 @@ function approve(){
 }
 
 function init(){
+	//approve employees
 	$(document).on('click', '.approve_employee_btn', function(){
 		$.ajax({
 					async: false,
 			type: 'GET',
-			url: "/approveemployee/" + this.id,
+			url: "/approveemployee/id=" + this.id ,
 			success: function(data, status) {
 				this.onclick = "";
 				this.text = "Approved";
@@ -37,6 +39,29 @@ function init(){
 				}
 			});		
 	});
+	//approve timecards
+	$(document).on('click', '.approve_timecard_btn', function(){
+		
+		debugger;
+		
+		let ids = this.id.split('_');
+		let row = document.getElementById(ids[1])
+		let starttime = row[0];
+		let endtime= row[1];
+			$.ajax({
+				async: false,
+		type: 'GET',
+		url: "/correttimetiekcet/" + this.id +"&" +starttime.id +"&"+endtime.id,
+		success: function(data, status) {
+			this.onclick = "";
+			this.disable= true;
+			this.display= none;
+			},
+			failure: function(data, status){
+				console.log(data);
+			}
+		});
+	})
 }
 
 //eventlisteners for this page
