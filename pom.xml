@@ -101,6 +101,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>mvn</executable>
+					<async>true</async>
+					<arguments>
+						<argument>sass:watch</argument>
+					</arguments>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -34,6 +34,7 @@ import services.TimeCardService;
 
 @RestController("/timecardcontroller")
 public class TimeCardController {
+/*Autowired fields that are injected through the DI used in Spring */
 	/*
 	@Autowired
 	private TimeCardService tcService;
@@ -42,7 +43,9 @@ public class TimeCardController {
 	private EmployeeRepository empRepo;
 	@Autowired
 	private TimeCardRepository timeCardRepo;
-	
+/************************************************************************************************************
+*Public Methods (can be called via web request) baseurl/value found in the mapping anotation
+************************************************************************************************************/	
 	@PostMapping("/gettimecardsbyid?{id}&{startdate}&{enddate}")
 	public ResponseEntity getTimeCardsById(@PathVariable int id,@PathVariable LocalDateTime startDate, @PathVariable LocalDateTime endDate, HttpServletRequest request) {
 		//this should work

@@ -30,13 +30,17 @@ import org.springframework.ui.Model;
 @Controller
 @CrossOrigin
 public class EmployeeController {
-
+/*Autowired fields that are injected through the DI used in Spring */
 	@Autowired
 	private EmployeeRepository empRepo;
 	@GetMapping("/createemployee")
 	public String CreateEmployee() {
 		return "createEmployee";
 	}	
+/************************************************************************************************************
+*Public Methods (can be called via web request) baseurl/value found in the mapping anotation
+************************************************************************************************************/
+	
 	@PostMapping(value="/createemployee", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String CreatEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
 		//this needs to work with map not the incoming model base..... fix me
@@ -77,20 +81,18 @@ public class EmployeeController {
 	}
 	@GetMapping("/retrieveallemployees")
 	public ResponseEntity<String> RetrieveAll(Model model, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}			
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
 		return new ResponseEntity(employees, HttpStatus.OK);
 	}
+	
 	@PostMapping("/findemployee")
 	public ResponseEntity<String> RetrieveEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		List<Employee> empList = empRepo.getAllByLastName(user.get("lastname"));
@@ -101,9 +103,8 @@ public class EmployeeController {
 	}
 	@PostMapping("/updatepassword")
 	public ResponseEntity<String> UpdatePassword( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		try{
@@ -124,15 +125,15 @@ public class EmployeeController {
 	}
 	@GetMapping("/approveemployee/{id}")
 	public ResponseEntity<String> ApproveEmployee(@PathVariable("id") int id, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		try{
 		Employee emp = empRepo.getOne(id);
 		emp.setApproved(true);
 		emp.setActive(true);
+		empRepo.saveAndFlush(emp);
 		return new ResponseEntity("success", HttpStatus.OK);
 		} catch (Exception ex) {
 			return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
@@ -140,17 +141,26 @@ public class EmployeeController {
 	}
 	@GetMapping("/deactivateuser/{id}")
 	public ResponseEntity<String> DeactivateEmployee(@PathVariable("id") int id, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		try{
 			Employee emp = empRepo.getOne(id);
 			emp.setActive(false);
+			empRepo.saveAndFlush(emp);
 			return new ResponseEntity("success", HttpStatus.OK);
 			} catch (Exception ex) {
 				return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
 			}
 	}
+/************************************************************************************************************
+ * Private Methods
+ ***********************************************************************************************************/
+	private boolean isLoggedIn(HttpServletRequest request) {
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		return (msgs == null)? false:true;
+	}
+	
 }

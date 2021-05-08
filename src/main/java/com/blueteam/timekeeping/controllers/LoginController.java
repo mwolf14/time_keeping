@@ -32,13 +32,18 @@ import com.blueteam.timekeeping.repositories.TimeCardRepository;
 @Controller
 @CrossOrigin
 public class LoginController {
+/*Autowired fields that are injected through the DI used in Spring */
 	@Autowired
 	private EmployeeRepository empRepo;
 	@Autowired
 	private TimeCardRepository timeCardRepo;
+	
+/* fields*/
 	private long max = (long).05;
 
-	
+/************************************************************************************************************
+*Public Methods (can be called via web request) baseurl/value found in the mapping anotation
+************************************************************************************************************/	
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user
@@ -120,6 +125,12 @@ public class LoginController {
 			return "index";
 		}
 	}
+	
+	@GetMapping(path="/logout")
+	public String LogOut(Model model, HttpServletRequest request) {
+		request.getSession().invalidate();
+		return "index";
+	}
 
 	private List<Employee> getListOfEmployeesThatNeedTimeEdits() {
 		List<Employee> allEmployees = empRepo.findAll();
@@ -141,6 +152,9 @@ public class LoginController {
 		return needEditEmployees;
 	}
 	
+/************************************************************************************************************
+*Private methods
+************************************************************************************************************/
 	private void seedTimeCardsWithTicketsToApprove() {
 		Employee emp = empRepo.getOne(0);
 		for (int i = 0; i < 100; i++) {
@@ -155,12 +169,5 @@ public class LoginController {
 			emp.addTimeCard(tc);
 		}
 		empRepo.saveAndFlush(emp);
-	}
-
-	@GetMapping(path="/logout")
-	public String LogOut(Model model, HttpServletRequest request) {
-		request.getSession().invalidate();
-		return "index";
-	}
-	
+	}	
 }

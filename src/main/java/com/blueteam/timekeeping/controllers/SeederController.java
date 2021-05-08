@@ -13,7 +13,7 @@ import com.blueteam.timekeeping.repositories.EmployeeRepository;
 
 @RestController
 public class SeederController {
-	
+// TODO: DELETE for dev only needs deleted
 	@Autowired
 	private EmployeeRepository empRepo;
 	
