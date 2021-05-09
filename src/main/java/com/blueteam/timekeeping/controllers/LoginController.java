@@ -3,28 +3,20 @@
  * Desc: this controller handles login into and out of the system 
 */
 package com.blueteam.timekeeping.controllers;
-
-import java.awt.PageAttributes.MediaType;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.blueteam.timekeeping.models.Employee;
 import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;

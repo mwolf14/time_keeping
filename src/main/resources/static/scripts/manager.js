@@ -27,7 +27,7 @@ function init(){
 		$.ajax({
 					async: false,
 			type: 'GET',
-			url: "/approveemployee/id=" + this.id ,
+			url: "/approveemployee/" + this.id ,
 			success: function(data, status) {
 				this.onclick = "";
 				this.text = "Approved";
