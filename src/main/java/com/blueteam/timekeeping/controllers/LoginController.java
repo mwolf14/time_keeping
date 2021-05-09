@@ -43,7 +43,7 @@ public class LoginController {
 	private long max = (long).05;
 
 /************************************************************************************************************
-*Public Methods (can be called via web request) baseurl/value found in the mapping anotation
+*Public Methods (can be called via web request) baseurl/value found in the mapping annotation
 ************************************************************************************************************/	
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
@@ -100,7 +100,7 @@ public class LoginController {
 			if (existingEmployee.getIsSupervisor())
 			{ 
 				//this seed line will need removed, along with the method for seeding
-				seedTimeCardsWithTicketsToApprove();
+				//seedTimeCardsWithTicketsToApprove();
 				List<Employee> needEditEmployees = getListOfEmployeesThatNeedTimeEdits();
 				if (needEditEmployees.size() != 0 ) {
 					model.addAttribute("needEditEmployees",needEditEmployees);

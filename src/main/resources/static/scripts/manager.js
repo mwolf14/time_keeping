@@ -51,8 +51,9 @@ function init(){
 			$.ajax({
 				async: false,
 		type: 'GET',
-		url: "/correttimetiekcet/" + this.id +"&" +starttime.id +"&"+endtime.id,
+		url: "/correttimetiekcet/" + this.id,
 		success: function(data, status) {
+			console.log(data.toString + " " + status);
 			this.onclick = "";
 			this.disable= true;
 			this.display= none;

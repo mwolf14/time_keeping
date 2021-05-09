@@ -142,15 +142,8 @@ public class TimeCardController {
 		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
 	}
 	//path should contain start end and time card id. we will know the user from session data
-	@GetMapping(path="/correcttimeticket/{}")
-	public String CorrectTimeTicket(@PathVariable("id") String id, HttpServletRequest request) {
-		//path variable will have the employee id concated with timecard id with _
-			String[] ids = id.split("_");
-		return "editpage";
-	}
-	
-	@GetMapping(path="/approvetimecard/{id}&{starttime}&{endtime}")
-	public ResponseEntity<String> ApproveTimeCard(@PathVariable("id") int id,@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request){
+	@GetMapping(path="/correcttimeticket/{id}&{starttime}&{endtime}")
+	public ResponseEntity<String> CorrectTimeTicket(@PathVariable("id") int id,@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request) {
 		TimeCard tc = timeCardRepo.getOne(id);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		String sTime = startTime.replace('T', ' ');
@@ -160,9 +153,17 @@ public class TimeCardController {
 		tc.setStartTime(LocalDateTime.parse(sTime, formatter));
 		tc.setEndTime(LocalDateTime.parse(eTime, formatter));
 		timeCardRepo.saveAndFlush(tc);
-		System.out.println("Start Time: " + sTime.toString() + " End Time: " + eTime.toString());
-		//added to make a valid stub
-		return new ResponseEntity<String>("stub", HttpStatus.OK);
+		
+		return new ResponseEntity<String>( id + " approved", HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/approvetimecard/{id}")
+	public ResponseEntity<String> ApproveTimeCard(@PathVariable("id") int id, HttpServletRequest request){
+		TimeCard tc = timeCardRepo.getOne(id);
+		tc.Approve();
+		timeCardRepo.saveAndFlush(tc);
+		
+		return new ResponseEntity<String>( id + " approved", HttpStatus.OK);
 	}
 	
 	
