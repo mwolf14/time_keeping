@@ -63,26 +63,6 @@ public class TimeCardController {
 		return new ResponseEntity("", HttpStatus.OK);
 	}
 	
-	@PostMapping(path="/editrecord")
-	public String editRecord( @RequestParam Map<String, String> timeSpan, Model model, HttpServletRequest request) {
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		//if you dont have a session back to index
-		if (msgs == null) {
-			return "index";
-		}
-		/*param should boil down to:
-		 * 
-		 */
-		
-		Optional<Employee> emp = empRepo.findById(Integer.parseInt(msgs.get(0)));
-		if (emp != null) {
-			Employee employee = emp.get();
-		
-		}
-		return "editrecord";
-	}
-	
 	@GetMapping(path="/clockin")
 	public ResponseEntity<String> ClockIn(HttpServletRequest request) {
 		
@@ -130,9 +110,9 @@ public class TimeCardController {
 				}
 			}
 		}
-		
 		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
 	}
+	
 	//path should contain start end and time card id. we will know the user from session data
 	@GetMapping(path="/correcttimeticket/{id}&{starttime}&{endtime}")
 	public ResponseEntity<String> CorrectTimeTicket(@PathVariable("id") int id,@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request) {
@@ -145,7 +125,6 @@ public class TimeCardController {
 		tc.setStartTime(LocalDateTime.parse(sTime, formatter));
 		tc.setEndTime(LocalDateTime.parse(eTime, formatter));
 		timeCardRepo.saveAndFlush(tc);
-		
 		return new ResponseEntity<String>( id + " approved", HttpStatus.OK);
 	}
 	
