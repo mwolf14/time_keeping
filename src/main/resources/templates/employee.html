@@ -9,17 +9,18 @@
 </head>
 <body>
 <!-- This is served by default from the server -->
-<h1>Employee</h1>
-<p>This is the template that is wired to if someone logs in is successful</p>
-<div>
-<span th:if="${problemTicket}"><h3>Please click the <a href="/correcttimeticket">link</a> to correct past tickets</h3></span>
-</div>
-<span>
-<span id="btn_span">
-	<button th:text="${btnText}" th:id="${btnId}"></button>
-</span>
-<a href="/logout"><button >Log Out</button></a>
-</span>
+	<h1>Employee</h1>
+	<p>This is the template that is wired to if someone logs in is successful</p>
+	<div>
+		<span th:if="${problemTicket}"><h3>Please click the <a href="/correcttimeticket">link</a> to correct past tickets</h3></span>
+	</div>
+	<span>
+		<a href="gettimecards"><button>Employee Times</button></a><p></p>
+		<span id="btn_span">
+			<button th:text="${btnText}" th:id="${btnId}"></button>
+		</span>
+		<a href="/logout"><button >Log Out</button></a>
+	</span>
 <footer>
 </footer>
 <script src="/scripts/jquery.min.js"></script>
