@@ -1,38 +1,69 @@
-* {
-  background-color: #ededed;
+body {
+  margin-top: 30px;
+  background-color: lightgray;
+  font-family: "Roboto";
 }
-h1 { 
-    text-align: center;
-     font-size: 3em;
+h1 {
+  font-family: "Roboto";
+  margin: 40px;
+  text-align: center;
+  font-size: 3em;
 }
 h2 {
-    text-align: center;
+  font-size: 2.5em;
+  text-align: center;
+  font-family: "Roboto";
 }
-nav { 
-    text-align: center;
-      font-weight: bold;
+nav {
+  text-align: center;
+  font-weight: bold;
 }
 form {
-    text-align: center;
+  text-align: center;
+}
+
+.content-container {
+  overflow: hidden;
+  position: relative;
+  width: 1200px;
+  /* This is the height of the content */
+  height: 750px;
+  margin: 0 auto 100px;
+  background: white;
+  border-radius: 40px;
 }
 
 button {
   border: 1px solid #0066cc;
   background-color: #0099cc;
-  color: #ffffff;
   padding: 5px 10px;
+  display: block;
+  margin: 0 auto;
+  width: 120px;
+  height: 60px;
+  border-radius: 40px;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 button:hover {
   border: 1px solid #0099cc;
   background-color: #00aacc;
-  color: #ffffff;
   padding: 5px 10px;
 }
 
 button:disabled,
-button[disabled]{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
+button[disabled] {
+  border: 1px solid darkgray;
+  color: grey;
+}
+
+input {
+  margin: 10px;
+  padding: 10px;
+}
+
+#employee_icon {
+  padding-top: 40px;
 }
