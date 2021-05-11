@@ -92,7 +92,7 @@ public class LoginController {
 			if (existingEmployee.getIsSupervisor())
 			{ 
 				//this seed line will need removed, along with the method for seeding
-				//seedTimeCardsWithTicketsToApprove();
+				seedTimeCardsWithTicketsToApprove();
 				List<Employee> needEditEmployees = getListOfEmployeesThatNeedTimeEdits();
 				if (needEditEmployees.size() != 0 ) {
 					model.addAttribute("needEditEmployees",needEditEmployees);
@@ -166,4 +166,5 @@ public class LoginController {
 		}
 		empRepo.saveAndFlush(emp);
 	}	
+	
 }

@@ -62,7 +62,13 @@ public class TimeCardController {
 
 		return new ResponseEntity("", HttpStatus.OK);
 	}
-	
+	@GetMapping(path="/gettimecardsbydate/{startdate}&{enddate}")
+	public ResponseEntity<String> GetTimeCardsByDates(@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request){
+		
+		List<TimeCard> times = timeCardRepo.findAll();
+		return new ResponseEntity("times", HttpStatus.OK);
+		
+	}
 	@GetMapping(path="/clockin")
 	public ResponseEntity<String> ClockIn(HttpServletRequest request) {
 		
@@ -86,7 +92,6 @@ public class TimeCardController {
 			return new ResponseEntity<String>(HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
-			
 	}
 	
 	@GetMapping(path="/clockout")

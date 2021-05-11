@@ -74,6 +74,8 @@ public class EmployeeController {
 		empRepo.save(newEmp);
 		empRepo.flush();
 		model.addAttribute("userName",newEmp.getUserName());
+		model.addAttribute("employeeFname", newEmp.getFirstName());
+		model.addAttribute("employeeLname", newEmp.getLastName());
 		return "employeecreated";
 		}catch(Exception ex) {
 			return ex.toString();
@@ -103,7 +105,6 @@ public class EmployeeController {
 	}
 	@PostMapping("/updatepassword")
 	public ResponseEntity<String> UpdatePassword( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
-		
 		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
@@ -121,11 +122,9 @@ public class EmployeeController {
 		} catch (Exception ex) {
 				return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
 		}
-		
 	}
 	@GetMapping("/approveemployee/{id}")
 	public ResponseEntity<String> ApproveEmployee(@PathVariable("id") int id, HttpServletRequest request){
-		
 		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
