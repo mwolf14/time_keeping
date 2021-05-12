@@ -153,6 +153,14 @@ public class EmployeeController {
 				return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
 			}
 	}
+	
+	@GetMapping("/gettimecards")
+	public String GetTimeCards(Model model, HttpServletRequest request) {
+		if (!isLoggedIn(request)) {
+			return "index";
+		}
+		return "gettimecards";
+	}
 /************************************************************************************************************
  * Private Methods
  ***********************************************************************************************************/
