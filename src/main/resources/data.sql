@@ -22,7 +22,7 @@ INSERT INTO public.employees(
 	VALUES (0,'Dave','Hawkins', true, 'passwordpass', true,'admin', true);
 INSERT INTO public.employees(
 	id, first_name, last_name, approved, password, supervisor, user_name, active)
-	VALUES (-1,'Tester','Tester', true, 'passwordpass', true,'TTester', false);
+	VALUES (-1,'Tester','Tester', true, 'passwordpass', false,'TTester', true);
 
 /* create the audit log table and trigger*/
 
