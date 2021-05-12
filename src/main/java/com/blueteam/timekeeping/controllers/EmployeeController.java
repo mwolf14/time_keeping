@@ -23,20 +23,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.blueteam.timekeeping.models.Employee;
+import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
+import com.blueteam.timekeeping.repositories.TimeCardRepository;
+
 import org.springframework.ui.Model;
 
 
 @Controller
 @CrossOrigin
 public class EmployeeController {
-
+/*Autowired fields that are injected through the DI used in Spring */
 	@Autowired
 	private EmployeeRepository empRepo;
+	@Autowired
+	private TimeCardRepository timeCardRepo;
 	@GetMapping("/createemployee")
 	public String CreateEmployee() {
 		return "createEmployee";
 	}	
+/************************************************************************************************************
+*Public Methods (can be called via web request) baseurl/value found in the mapping anotation
+************************************************************************************************************/
+	
 	@PostMapping(value="/createemployee", consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String CreatEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
 		//this needs to work with map not the incoming model base..... fix me
@@ -70,6 +79,8 @@ public class EmployeeController {
 		empRepo.save(newEmp);
 		empRepo.flush();
 		model.addAttribute("userName",newEmp.getUserName());
+		model.addAttribute("employeeFname", newEmp.getFirstName());
+		model.addAttribute("employeeLname", newEmp.getLastName());
 		return "employeecreated";
 		}catch(Exception ex) {
 			return ex.toString();
@@ -77,20 +88,18 @@ public class EmployeeController {
 	}
 	@GetMapping("/retrieveallemployees")
 	public ResponseEntity<String> RetrieveAll(Model model, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}			
 		List<Employee> employees = empRepo.findAll();
 		model.addAttribute("employees" , employees);
 		return new ResponseEntity(employees, HttpStatus.OK);
 	}
+	
 	@PostMapping("/findemployee")
 	public ResponseEntity<String> RetrieveEmployee( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		List<Employee> empList = empRepo.getAllByLastName(user.get("lastname"));
@@ -101,9 +110,7 @@ public class EmployeeController {
 	}
 	@PostMapping("/updatepassword")
 	public ResponseEntity<String> UpdatePassword( @RequestParam Map<String, String> user, Model model, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		try{
@@ -120,19 +127,17 @@ public class EmployeeController {
 		} catch (Exception ex) {
 				return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
 		}
-		
 	}
 	@GetMapping("/approveemployee/{id}")
 	public ResponseEntity<String> ApproveEmployee(@PathVariable("id") int id, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		try{
 		Employee emp = empRepo.getOne(id);
 		emp.setApproved(true);
 		emp.setActive(true);
+		empRepo.saveAndFlush(emp);
 		return new ResponseEntity("success", HttpStatus.OK);
 		} catch (Exception ex) {
 			return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
@@ -140,17 +145,37 @@ public class EmployeeController {
 	}
 	@GetMapping("/deactivateuser/{id}")
 	public ResponseEntity<String> DeactivateEmployee(@PathVariable("id") int id, HttpServletRequest request){
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		
+		if (!isLoggedIn(request)) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
 		try{
 			Employee emp = empRepo.getOne(id);
 			emp.setActive(false);
+			empRepo.saveAndFlush(emp);
 			return new ResponseEntity("success", HttpStatus.OK);
 			} catch (Exception ex) {
 				return new ResponseEntity("Something went wrong", HttpStatus.NOT_FOUND);
 			}
 	}
+	
+	@GetMapping("/gettimecards")
+	public String GetTimeCards(Model model, HttpServletRequest request) {
+		if (!isLoggedIn(request)) {
+			return "index";
+		}
+		List<String> session = (List<String>) request.getSession().getAttribute("Session_Info");
+		Employee emp = empRepo.getOne(Integer.parseInt(session.get(0)));
+		model.addAttribute("timeCards", emp.getTimeCards());
+		return "gettimecards";
+	}
+/************************************************************************************************************
+ * Private Methods
+ ***********************************************************************************************************/
+	private boolean isLoggedIn(HttpServletRequest request) {
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		return (msgs == null)? false:true;
+	}
+	
 }

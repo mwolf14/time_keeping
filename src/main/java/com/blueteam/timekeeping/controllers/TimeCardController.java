@@ -5,35 +5,29 @@
 package com.blueteam.timekeeping.controllers;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.blueteam.timekeeping.models.Employee;
 import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
 import com.blueteam.timekeeping.repositories.TimeCardRepository;
 
-import services.TimeCardService;
 
 @RestController("/timecardcontroller")
 public class TimeCardController {
+/*Autowired fields that are injected through the DI used in Spring */
 	/*
 	@Autowired
 	private TimeCardService tcService;
@@ -42,16 +36,11 @@ public class TimeCardController {
 	private EmployeeRepository empRepo;
 	@Autowired
 	private TimeCardRepository timeCardRepo;
-	
-	@PostMapping("/gettimecardsbyid?{id}&{startdate}&{enddate}")
+/************************************************************************************************************
+*Public Methods (can be called via web request) baseurl/value found in the mapping anotation
+************************************************************************************************************/	
+	@PostMapping("/gettimecardsbyid/{startdate}&{enddate}")
 	public ResponseEntity getTimeCardsById(@PathVariable int id,@PathVariable LocalDateTime startDate, @PathVariable LocalDateTime endDate, HttpServletRequest request) {
-		//this should work
-		/*
-		 * get the session info
-		 * if the session is empty send back a 404
-		 * get the employee
-		 * get the timecards and then return them with a 200
-		 */
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
 		if (msgs == null) {
@@ -66,27 +55,13 @@ public class TimeCardController {
 
 		return new ResponseEntity("", HttpStatus.OK);
 	}
-	
-	@PostMapping(path="/editrecord")
-	public String editRecord( @RequestParam Map<String, String> timeSpan, Model model, HttpServletRequest request) {
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		//if you dont have a session back to index
-		if (msgs == null) {
-			return "index";
-		}
-		/*param should boil down to:
-		 * 
-		 */
+	@GetMapping(path="/gettimecardsbydate/{startdate}&{enddate}")
+	public ResponseEntity<String> GetTimeCardsByDates(@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request){
 		
-		Optional<Employee> emp = empRepo.findById(Integer.parseInt(msgs.get(0)));
-		if (emp != null) {
-			Employee employee = emp.get();
+		List<TimeCard> times = timeCardRepo.findAll();
+		return new ResponseEntity("times", HttpStatus.OK);
 		
-		}
-		return "editrecord";
 	}
-	
 	@GetMapping(path="/clockin")
 	public ResponseEntity<String> ClockIn(HttpServletRequest request) {
 		
@@ -98,16 +73,18 @@ public class TimeCardController {
 		} 
 		int test = Integer.parseInt(msgs.get(0));		
 		Optional<Employee> emp = empRepo.findById(test);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		if (emp != null) {
 			Employee employee = emp.get();
 			TimeCard timecard = new TimeCard();
-			timecard.setStartTime(LocalDateTime.now());
+			LocalDateTime now = LocalDateTime.now();
+			now.format(formatter);
+			timecard.setStartTime(now);
 			employee.addTimeCard(timecard);
 			empRepo.saveAndFlush(employee);
 			return new ResponseEntity<String>(HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
-			
 	}
 	
 	@GetMapping(path="/clockout")
@@ -124,19 +101,36 @@ public class TimeCardController {
 			List<TimeCard> timeCards = employee.getTimeCards();
 			for(int i = 0; i< timeCards.size(); i++){
 				if (timeCards.get(i).getIsOpen()) {
-					timeCards.get(i).setEndTime(LocalDateTime.now());
+					LocalDateTime now = LocalDateTime.now();
+					timeCards.get(i).setEndTime(now);
 					empRepo.saveAndFlush(employee);
 					return new ResponseEntity<String>(HttpStatus.OK);
 				}
 			}
 		}
-		
 		return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
 	}
 	
-	@GetMapping(path="/correcttimeticket")
-	public String CorrectTimeTicket(Model model, HttpServletRequest request) {
-			
-		return "editpage";
+	//path should contain start end and time card id. we will know the user from session data
+	@GetMapping(path="/correcttimeticket/{id}&{starttime}&{endtime}")
+	public ResponseEntity<String> CorrectTimeTicket(@PathVariable("id") int id,@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request) {
+		TimeCard tc = timeCardRepo.getOne(id);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		String sTime = startTime.replace('T', ' ');
+		String eTime = endTime.replace('T', ' ');
+		System.out.println("Start Time is: " + sTime);
+		System.out.println("End Time is: " + eTime);
+		tc.setStartTime(LocalDateTime.parse(sTime, formatter));
+		tc.setEndTime(LocalDateTime.parse(eTime, formatter));
+		timeCardRepo.saveAndFlush(tc);
+		return new ResponseEntity<String>( id + " approved", HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/approvetimecard/{id}")
+	public ResponseEntity<String> ApproveTimeCard(@PathVariable("id") int id, HttpServletRequest request){
+		TimeCard tc = timeCardRepo.getOne(id);
+		tc.Approve();
+		timeCardRepo.saveAndFlush(tc);	
+		return new ResponseEntity<String>( id + " approved", HttpStatus.OK);
 	}
 }

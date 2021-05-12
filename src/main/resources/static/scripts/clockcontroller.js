@@ -1,12 +1,8 @@
 /*Author: Matt Wolf
-Date: 5/1/21
+Date: 5/10/21
 Desc: add the event listener to the clock in clock out button
 */
-
 "use strict"
-
-
-
 function clockIn(){
 	$.ajax({
 		async: false,
@@ -17,7 +13,7 @@ function clockIn(){
 			btn.id = "clockoutbtn";
 			btn.addEventListener("click", clockOut, false);
 			let clockspan = document.getElementById("btn_span");
-			clockspan.childNodes = "";
+			clockspan.innerHTML = "";
 			btnspan.appendChild(btn);
 			},
 		failure: function(data, status){
@@ -36,7 +32,7 @@ function clockOut(){
 			btn.id = "clockinbtn";
 			btn.addEventListener("click", clockIn, false);
 			let clockspan = document.getElementById("btn_span");
-			clockspan.childNodes = "";
+			clockspan.innerHTML = "";
 			btnspan.appendChild(btn);
 			},
 			failure: function(data, status){
@@ -46,16 +42,21 @@ function clockOut(){
 }
 
 function init(){
+	console.log("in the init function of the clockcontroller script");
 	if ($('#clockinbtn')){
+		console.log("in the init function clockinbtn");
     	$('#clockinbtn').on("click", clockIn());
     } else{
+			console.log("in the init function clockoutbtn");
     		$('#clockoutbtn').on("click", clockOut());
     }
 }
 
 //eventlisteners for this page
 if (window.addEventListener) {
-	document.addEventListener("load", init, false);
+	console.log("in addEventListener");
+	window.addEventListener("load",init, false);
 } else if (window.attachEvent) {
-	document.attachEvent("onload",init);
+	console.log("in attachEvent");
+	window.attachEvent("onload",init);
 }

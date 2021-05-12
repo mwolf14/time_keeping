@@ -3,27 +3,20 @@
  * Desc: this controller handles login into and out of the system 
 */
 package com.blueteam.timekeeping.controllers;
-
-import java.awt.PageAttributes.MediaType;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.blueteam.timekeeping.models.Employee;
 import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
@@ -32,13 +25,18 @@ import com.blueteam.timekeeping.repositories.TimeCardRepository;
 @Controller
 @CrossOrigin
 public class LoginController {
+/*Autowired fields that are injected through the DI used in Spring */
 	@Autowired
 	private EmployeeRepository empRepo;
 	@Autowired
 	private TimeCardRepository timeCardRepo;
+	
+/* fields*/
 	private long max = (long).05;
 
-	
+/************************************************************************************************************
+*Public Methods (can be called via web request) baseurl/value found in the mapping annotation
+************************************************************************************************************/	
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user
@@ -120,6 +118,12 @@ public class LoginController {
 			return "index";
 		}
 	}
+	
+	@GetMapping(path="/logout")
+	public String LogOut(Model model, HttpServletRequest request) {
+		request.getSession().invalidate();
+		return "index";
+	}
 
 	private List<Employee> getListOfEmployeesThatNeedTimeEdits() {
 		List<Employee> allEmployees = empRepo.findAll();
@@ -141,26 +145,26 @@ public class LoginController {
 		return needEditEmployees;
 	}
 	
+/************************************************************************************************************
+*Private methods
+************************************************************************************************************/
 	private void seedTimeCardsWithTicketsToApprove() {
-		Employee emp = empRepo.getOne(0);
+		Employee emp = empRepo.getOne(-1);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		for (int i = 0; i < 100; i++) {
-			
+			LocalDateTime start = LocalDateTime.now();
+			start.format(formatter);
+			LocalDateTime end = LocalDateTime.now();
+			end.format(formatter);
 			TimeCard tc = new TimeCard();
 			tc.setClosedBySystem();
-			tc.setStartTime(LocalDateTime.now());
-			tc.setEndTime(LocalDateTime.now());
-			
+			tc.setStartTime(start);
+			tc.setEndTime(end);
 			tc.needsApproved();
 			tc.isClosedBySystem();
 			emp.addTimeCard(tc);
 		}
 		empRepo.saveAndFlush(emp);
-	}
-
-	@GetMapping(path="/logout")
-	public String LogOut(Model model, HttpServletRequest request) {
-		request.getSession().invalidate();
-		return "index";
-	}
+	}	
 	
 }

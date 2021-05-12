@@ -10,20 +10,13 @@
 package com.blueteam.timekeeping.models;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-
+import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import com.blueteam.timekeeping.models.ModelBase;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="TimeCards")
@@ -53,31 +46,38 @@ public class TimeCard  {
 		this.employee= emp;
 	}
 	*/
+/************************************************************************************************************
+*Public Methods Getters and Setters
+************************************************************************************************************/
 	public LocalDateTime getStartTime() {
 		return startTime;
 	}
+	public String getStartTimeDisplayString() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		return startTime.format(formatter);
+	}
 
+	
 	public void setStartTime(LocalDateTime startTime) {
-		if (this.isOpen) {
-			this.startTime = startTime;
-		} else {
-			this.startTime = startTime;
-			this.needsApproved = true;
-		}
-		
+		this.startTime =  CorrectTimeEntryFormattingForBusinessRules(startTime);
 	}
 
 	public LocalDateTime getEndTime() {
 		return endTime;
 	}
+	public String getEndTimeDisplayString() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		return endTime.format(formatter);
+	}
 
 	public void setEndTime(LocalDateTime endTime) {
+		LocalDateTime corrected = CorrectTimeEntryFormattingForBusinessRules(endTime);
 		if (this.isOpen) {
-		this.endTime = endTime;
+		this.endTime = corrected;
 		this.isOpen = false;
 		} else {
 			//this branch will only be reached on an edit of the endtime
-			this.endTime =endTime;
+			this.endTime =corrected;
 			this.needsApproved = true;
 		}
 	}
@@ -124,6 +124,33 @@ public class TimeCard  {
 
 	public void setApprovedBy(int approvedBy) {
 		this.approvedBy = approvedBy;
+	}
+/************************************************************************************************************
+*Private methods
+************************************************************************************************************/	
+	
+	private LocalDateTime CorrectTimeEntryFormattingForBusinessRules(LocalDateTime inputTime) {
+		LocalDateTime minCorrect = CorrectMinutes(inputTime);
+		LocalDateTime clearSeconds = ClearSeconds(minCorrect);
+		return ClearMilliSeconds(clearSeconds);
+	}
+	private LocalDateTime ClearMilliSeconds(LocalDateTime clearSeconds) {
+		
+		return clearSeconds.minusNanos(clearSeconds.getNano());
+	}
+
+	private LocalDateTime ClearSeconds(LocalDateTime minCorrect) {
+		return minCorrect.minusSeconds(minCorrect.getSecond());
+	}
+
+	private LocalDateTime CorrectMinutes(LocalDateTime inputTime) {
+		if(inputTime.getMinute()%15 < 8) {
+			LocalDateTime newTime = inputTime.minusMinutes(inputTime.getMinute()%15);
+			return newTime;
+		} else {
+			LocalDateTime newTime = inputTime.plusMinutes(15-(inputTime.getMinute()%15));
+			return newTime;
+		}
 	}
 
 }
