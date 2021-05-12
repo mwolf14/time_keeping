@@ -23,7 +23,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.blueteam.timekeeping.models.Employee;
+import com.blueteam.timekeeping.models.TimeCard;
 import com.blueteam.timekeeping.repositories.EmployeeRepository;
+import com.blueteam.timekeeping.repositories.TimeCardRepository;
+
 import org.springframework.ui.Model;
 
 
@@ -33,6 +36,8 @@ public class EmployeeController {
 /*Autowired fields that are injected through the DI used in Spring */
 	@Autowired
 	private EmployeeRepository empRepo;
+	@Autowired
+	private TimeCardRepository timeCardRepo;
 	@GetMapping("/createemployee")
 	public String CreateEmployee() {
 		return "createEmployee";
@@ -159,6 +164,9 @@ public class EmployeeController {
 		if (!isLoggedIn(request)) {
 			return "index";
 		}
+		List<String> session = (List<String>) request.getSession().getAttribute("Session_Info");
+		Employee emp = empRepo.getOne(Integer.parseInt(session.get(0)));
+		model.addAttribute("timeCards", emp.getTimeCards());
 		return "gettimecards";
 	}
 /************************************************************************************************************
