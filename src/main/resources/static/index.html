@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <title>Employee Time Login</title>
     <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" />
+
     <link rel="stylesheet" type="text/css" href="styles/test.scss" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet"> 
+
 </head>
 <body>
 <!-- This is served by default from the server -->
 <h1>Employee Time Login</h1>
+<div class="cont">
     <nav>
       <form method="post" action="/login">
         <section>
           <label for="myName">Username: </label>
-          <input type="text" name="myName" id="myName" required>
+          <input class="textInput" type="text" name="myName" id="myName" required>
         </section><br>
         <section>
           <label for="password">Password: </label>
@@ -24,12 +27,10 @@
         <input type="submit" id="mySubmit" href="account.html" value="Login">
       </form><br>
     <b>
-
       <a class="button" href="createemployee.html">Sign Up</a> &nbsp;
       <a class="button" href="finduser.html">Forgot password or username?</a>
-
-
     </b>
-</nav>
+  </nav>
+</div>
 </body>
 </html>
