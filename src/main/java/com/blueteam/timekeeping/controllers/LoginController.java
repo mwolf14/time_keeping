@@ -149,7 +149,7 @@ public class LoginController {
 *Private methods
 ************************************************************************************************************/
 	private void seedTimeCardsWithTicketsToApprove() {
-		Employee emp = empRepo.getOne(0);
+		Employee emp = empRepo.getOne(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		for (int i = 0; i < 100; i++) {
 			LocalDateTime start = LocalDateTime.now();

@@ -39,15 +39,8 @@ public class TimeCardController {
 /************************************************************************************************************
 *Public Methods (can be called via web request) baseurl/value found in the mapping anotation
 ************************************************************************************************************/	
-	@PostMapping("/gettimecardsbyid?{id}&{startdate}&{enddate}")
+	@PostMapping("/gettimecardsbyid/{startdate}&{enddate}")
 	public ResponseEntity getTimeCardsById(@PathVariable int id,@PathVariable LocalDateTime startDate, @PathVariable LocalDateTime endDate, HttpServletRequest request) {
-		//this should work
-		/*
-		 * get the session info
-		 * if the session is empty send back a 404
-		 * get the employee
-		 * get the timecards and then return them with a 200
-		 */
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
 		if (msgs == null) {
@@ -137,10 +130,7 @@ public class TimeCardController {
 	public ResponseEntity<String> ApproveTimeCard(@PathVariable("id") int id, HttpServletRequest request){
 		TimeCard tc = timeCardRepo.getOne(id);
 		tc.Approve();
-		timeCardRepo.saveAndFlush(tc);
-		
+		timeCardRepo.saveAndFlush(tc);	
 		return new ResponseEntity<String>( id + " approved", HttpStatus.OK);
 	}
-	
-	
 }
