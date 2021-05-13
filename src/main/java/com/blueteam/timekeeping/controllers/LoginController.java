@@ -40,6 +40,7 @@ public class LoginController {
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user
+
 		try {
 		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
 		if (!existingEmployee.isApproved()) {
