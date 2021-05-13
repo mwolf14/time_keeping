@@ -6,6 +6,7 @@ package com.blueteam.timekeeping.controllers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,28 +40,31 @@ public class TimeCardController {
 /************************************************************************************************************
 *Public Methods (can be called via web request) baseurl/value found in the mapping anotation
 ************************************************************************************************************/	
-	@PostMapping("/gettimecardsbyid/{startdate}&{enddate}")
-	public ResponseEntity getTimeCardsById(@PathVariable int id,@PathVariable LocalDateTime startDate, @PathVariable LocalDateTime endDate, HttpServletRequest request) {
+
+	@GetMapping(path="/gettimecardsbydate/{startdate}&{enddate}")
+	public ResponseEntity<String> GetTimeCardsByDates(@PathVariable("starttime")String startDate, @PathVariable("endtime") String endDate, HttpServletRequest request){
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
 		if (msgs == null) {
 			return new ResponseEntity("Please log in", HttpStatus.FORBIDDEN);
 		}
-		Employee employee = empRepo.getOne(Integer.parseInt(msgs.get(0)));
-			return new ResponseEntity(employee.getTimeCards(), HttpStatus.OK);
-	}
-	
-	@PostMapping(path="/gettimecardsbyids")
-	public ResponseEntity getTimeCardsByIds( @RequestParam Map<String, String> timeSpan, Model model, HttpServletRequest request) {		
-
-		return new ResponseEntity("", HttpStatus.OK);
-	}
-	@GetMapping(path="/gettimecardsbydate/{startdate}&{enddate}")
-	public ResponseEntity<String> GetTimeCardsByDates(@PathVariable("starttime")String startTime, @PathVariable("endtime") String endTime, HttpServletRequest request){
-		
-		List<TimeCard> times = timeCardRepo.findAll();
-		return new ResponseEntity("times", HttpStatus.OK);
-		
+		try {
+			Employee employee = empRepo.getOne(Integer.parseInt(msgs.get(0)));
+			List<TimeCard> timecards = employee.getTimeCards();
+			List<TimeCard> searchedTimeCards = new ArrayList<TimeCard>();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			String sDate = startDate.replace('T', ' ');
+			String eDate = endDate.replace('T', ' ');
+			for(int i = 0; i< timecards.size(); i++){
+				if (timecards.get(i).getStartTime().isAfter(LocalDateTime.parse(sDate, formatter)) && timecards.get(i).getStartTime().isBefore(LocalDateTime.parse(eDate, formatter))) {
+					searchedTimeCards.add(timecards.get(i));
+				}
+			}
+				return new ResponseEntity(searchedTimeCards, HttpStatus.OK);
+		}
+		catch(Exception ex) {
+			return new ResponseEntity("There was a problem.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	@GetMapping(path="/clockin")
 	public ResponseEntity<String> ClockIn(HttpServletRequest request) {

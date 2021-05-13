@@ -30,17 +30,17 @@ public class LoginController {
 	private EmployeeRepository empRepo;
 	@Autowired
 	private TimeCardRepository timeCardRepo;
-	
+
 /* fields*/
 	private long max = (long).05;
 
 /************************************************************************************************************
 *Public Methods (can be called via web request) baseurl/value found in the mapping annotation
-************************************************************************************************************/	
+************************************************************************************************************/
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user
-		
+
 		Employee existingEmployee;
 		List<String> incoming = isLoggedIn(request);
 		if (incoming != null) {
@@ -57,7 +57,7 @@ public class LoginController {
 				return "index";
 			}
 		}
-		
+
 		//emp.setRecId(existingEmployee.getRecId());
 		List<TimeCard> timeCards = existingEmployee.getTimeCards();
 		Employee emp = new Employee();
@@ -86,9 +86,9 @@ public class LoginController {
 						model.addAttribute("href", "/clockout");
 						model.addAttribute("btnText", "Clock Out");
 						model.addAttribute("btnId", "clockoutbtn");
-							
+
 					} else {
-						//this should update the database to show that the ticket is completed, but it was completed by the system not the employee	
+						//this should update the database to show that the ticket is completed, but it was completed by the system not the employee
 						timeCards.get(i).setEndTime(started.plusHours(max));
 						timeCards.get(i).setClosedBySystem();
 						model.addAttribute("problemTicket", true);
@@ -100,10 +100,10 @@ public class LoginController {
 				model.addAttribute("href", "/clockin");
 				model.addAttribute("btnText", "Clock In");
 				model.addAttribute("btnId", "clockinbtn");
-				
+
 			}
 			if (existingEmployee.getIsSupervisor())
-			{ 
+			{
 				//this seed line will need removed, along with the method for seeding
 				seedTimeCardsWithTicketsToApprove();
 				List<Employee> needEditEmployees = getListOfEmployeesThatNeedTimeEdits();
@@ -126,7 +126,7 @@ public class LoginController {
 			return "index";
 		}
 		}
-	
+
 	@GetMapping(path="/logout")
 	public String LogOut(Model model, HttpServletRequest request) {
 		request.getSession().invalidate();
@@ -152,7 +152,7 @@ public class LoginController {
 		}
 		return needEditEmployees;
 	}
-	
+
 /************************************************************************************************************
 *Private methods
 ************************************************************************************************************/
@@ -174,11 +174,11 @@ public class LoginController {
 		}
 		empRepo.saveAndFlush(emp);
 	}
-	
+
 	private List<String> isLoggedIn(HttpServletRequest request) {
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
 		return msgs ;
 	}
-	
+
 }
