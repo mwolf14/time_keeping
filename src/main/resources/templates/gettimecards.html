@@ -10,20 +10,16 @@
 </head>
 <body>
 
-<form>
+	<a href="/login"><button>Back to Home Screen</button></a>
 
-
-</form>
-
-<table th:each="timecard: ${timeCards}">
-
-        	<tr><td>Start Time<td>
+	<table th:each="timecard: ${timeCards}">
+    	<tr>
+			<td>Start Time<td>
         	<td>End Time<td></tr>
         	<td th:text=${timecard.getStartTime}></td>
         	<td th:text=${timecard.getEndTime}></td>
-        	<td><button th:id="${timecard.getTimeCardId}" class="approve_timecard_btn">Approve</button></td>
-        	</tr>
-
+        	<td><button th:id="${timecard.getTimeCardId}" class="update_timecard_btn">Update</button></td>
+        </tr>
 </table>
 
 </body>
