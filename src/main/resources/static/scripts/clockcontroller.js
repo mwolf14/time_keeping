@@ -67,4 +67,3 @@ if (window.addEventListener) {
 	console.log("in attachEvent");
 	window.attachEvent("onload",init);
 }
-}
