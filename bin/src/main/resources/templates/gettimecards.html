@@ -3,5 +3,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       lang="en">
-<h1>you are in get time cards from a get request</h1>
-<h2> your permission level is </h2><h2 th:text=${permissions}></h2>
+<h1>You are in get time cards from a get request</h1>
+<h2> your permission level is: </h2><h2 th:text=${permissions}></h2>
+    <head>
+    <title>Get time cards</title>
+</head>
+<body>
+
+	<a href="/login"><button>Back to Home Screen</button></a>
+
+	<table th:each="timecard: ${timeCards}">
+    	<tr>
+			<td>Start Time<td>
+        	<td>End Time<td></tr>
+        	<td th:text=${timecard.getStartTime}></td>
+        	<td th:text=${timecard.getEndTime}></td>
+        	<td><button th:id="${timecard.getTimeCardId}" class="update_timecard_btn">Update</button></td>
+        </tr>
+</table>
+
+</body>
+</html>

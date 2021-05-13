@@ -1,15 +1,38 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      lang="en">
-<head>
-    <meta charset="UTF-8">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org"
+  lang="en"
+>
+  <head>
+    <meta charset="UTF-8" />
     <title>Employee Time Login</title>
-</head>
-<body>
-<!-- This is served by default from the server -->
-<h1>Employee</h1>
-<p>This is the template that is wired to if someone logs in is successful</p>
-</body>
+
+  </head>
+  <body>
+    <!-- This is served by default from the server -->
+    <h1>Employee</h1>
+    <p>
+      This is the template that is wired to if someone logs in is successful
+    </p>
+    <div>
+      <span th:if="${problemTicket}">
+        <h3>
+          Please click the <a href="/correcttimeticket">link</a> to correct past
+          tickets
+        </h3>
+    </span>
+    </div>
+    <span>
+      <span id="btn_span">
+        <button th:text="${btnText}" th:id="${btnId}"></button>
+      </span>
+      <a href="/logout"><button>Log Out</button></a>
+    </span>
+    <footer></footer>
+    <script src="/scripts/jquery.min.js"></script>
+    <script src="/scripts/clockcontroller.js"></script>
+  </body>
 </html>
+

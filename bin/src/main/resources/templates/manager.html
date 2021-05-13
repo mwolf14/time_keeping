@@ -1,12 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Employee Time Login</title>
+    <title>Manager</title>
+    <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" />
 </head>
 <body>
 <!-- This is served by default from the server -->
 <h1>Manager</h1>
-<a href="/gettimecards">Get time cards</a>
+<p>manager logged</p>
+<h2>Time Cards For Approval</h2>
+<table th:each="employee: ${needEditEmployees}">
+        	<tr >
+        		<th th:text="${employee.getFirstName+' '+employee.getLastName}" th:id="${employee.getId}"></th>
+        	</tr>
+        	<tr><td>Start Time<td>
+        	<td>End Time<td></tr>
+        	<tr th:each="timecard: ${employee.getTimeCards}" th:id="timecard.getTimeCardId">
+        	<td th:text=${timecard.getStartTime}></td>
+        	<td th:text=${timecard.getEndTime}></td>
+        	<td><button th:id="${employee.getId+'_'+timecard.getTimeCardId}" class="approve_timecard_btn">Approve</button></td>
+        	</tr>
+</table>
+
+<!-- use the manager script init function to create the script to make the approve timecard button work-->
+
+<h2>Employees need Approval</h2>
+        <table>
+        	<tr th:each="employee: ${employeeNeedApproved}">
+        		
+        		<td th:text="${employee.getFirstName+' '+employee.getLastName}"></td>
+        		<td><button th:id="${employee.getId}" class="approve_employee_btn">Approve</button></td>
+        	</tr>
+        </table>
+        <a href="/logout"><button >Log Out</button></a>
+        <footer>
+        </footer>
+        <script src="/scripts/jquery.min.js"></script>
+        <script src="/scripts/manager.js"></script> 
 </body>
+
 </html>
