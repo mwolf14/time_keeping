@@ -40,11 +40,24 @@ public class LoginController {
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user
-		try {
-		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
-		if (!existingEmployee.isApproved()) {
-			return "problemwithaccount";
+		
+		Employee existingEmployee;
+		List<String> incoming = isLoggedIn(request);
+		if (incoming != null) {
+			 existingEmployee = empRepo.getOne(Integer.parseInt(incoming.get(0)));
+		} else {
+			try {
+				 existingEmployee = empRepo.findByUserName(user.get("myName"));
+				if (!existingEmployee.isApproved()) {
+					return "problemwithaccount";
+				}
+			}
+			catch(Exception e){
+				model.addAttribute("error","User name not found.");
+				return "index";
+			}
 		}
+		
 		//emp.setRecId(existingEmployee.getRecId());
 		List<TimeCard> timeCards = existingEmployee.getTimeCards();
 		Employee emp = new Employee();
@@ -113,11 +126,6 @@ public class LoginController {
 			return "index";
 		}
 		}
-	catch(Exception e){
-			model.addAttribute("error","User name not found.");
-			return "index";
-		}
-	}
 	
 	@GetMapping(path="/logout")
 	public String LogOut(Model model, HttpServletRequest request) {
@@ -165,6 +173,12 @@ public class LoginController {
 			emp.addTimeCard(tc);
 		}
 		empRepo.saveAndFlush(emp);
-	}	
+	}
+	
+	private List<String> isLoggedIn(HttpServletRequest request) {
+		@SuppressWarnings("unchecked")
+		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+		return msgs ;
+	}
 	
 }
