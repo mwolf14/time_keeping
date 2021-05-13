@@ -40,7 +40,6 @@ public class LoginController {
 	@PostMapping(path="/login")
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user
-
 		try {
 		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
 		if (!existingEmployee.isApproved()) {
@@ -126,25 +125,6 @@ public class LoginController {
 		return "index";
 	}
 
-	private List<Employee> getListOfEmployeesThatNeedTimeEdits() {
-		List<Employee> allEmployees = empRepo.findAll();
-		List<Employee> needEditEmployees = new ArrayList();
-		for (int i = 0; i < allEmployees.size(); i++) {
-			Employee needEditEmployee = new Employee();
-			needEditEmployee.setId(allEmployees.get(i).getId());
-			needEditEmployee.setFirstName(allEmployees.get(i).getFirstName());
-			needEditEmployee.setLastName(allEmployees.get(i).getLastName());
-			for(int j = 0; j < allEmployees.get(i).getTimeCards().size(); j++) {
-				if ((allEmployees.get(i).getTimeCards()).get(j).getNeedsApproved()) {
-					needEditEmployee.addTimeCard((allEmployees.get(i).getTimeCards()).get(j));
-				}
-			}
-			if (needEditEmployee.getTimeCards().size()!=0) {
-				needEditEmployees.add(needEditEmployee);
-			}
-		}
-		return needEditEmployees;
-	}
 
 /************************************************************************************************************
 *Private methods
@@ -168,10 +148,37 @@ public class LoginController {
 		empRepo.saveAndFlush(emp);
 	}
 
+	private List<Employee> getListOfEmployeesThatNeedTimeEdits() {
+		List<Employee> allEmployees = empRepo.findAll();
+		List<Employee> needEditEmployees = new ArrayList();
+		for (int i = 0; i < allEmployees.size(); i++) {
+			Employee needEditEmployee = new Employee();
+			needEditEmployee.setId(allEmployees.get(i).getId());
+			needEditEmployee.setFirstName(allEmployees.get(i).getFirstName());
+			needEditEmployee.setLastName(allEmployees.get(i).getLastName());
+			for(int j = 0; j < allEmployees.get(i).getTimeCards().size(); j++) {
+				if ((allEmployees.get(i).getTimeCards()).get(j).getNeedsApproved()) {
+					needEditEmployee.addTimeCard((allEmployees.get(i).getTimeCards()).get(j));
+				}
+			}
+			if (needEditEmployee.getTimeCards().size()!=0) {
+				needEditEmployees.add(needEditEmployee);
+			}
+		}
+		return needEditEmployees;
+	}
+/************************************************************************************************************
+*Enums
+************************************************************************************************************/
+	
+	
+
+
 	private List<String> isLoggedIn(HttpServletRequest request) {
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
 		return msgs ;
 	}
+
 
 }
