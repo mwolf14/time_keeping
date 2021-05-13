@@ -130,7 +130,7 @@ public class TimeCardController {
 		return new ResponseEntity<String>( id + " approved", HttpStatus.OK);
 	}
 	
-	@GetMapping(path="/approvetimecard/{id}")
+	@GetMapping(path="/updatetimecard/{id}")
 	public ResponseEntity<String> ApproveTimeCard(@PathVariable("id") int id, HttpServletRequest request){
 		TimeCard tc = timeCardRepo.getOne(id);
 		tc.Approve();

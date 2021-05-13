@@ -32,31 +32,60 @@ public class LoginController {
 	@Autowired
 	private TimeCardRepository timeCardRepo;
 
-	/* fields */
-	private long max = (long) 18.0 ;
 
-	/************************************************************************************************************
-	 * Public Methods (can be called via web request) baseurl/value found in the
-	 * mapping annotation
-	 ************************************************************************************************************/
-	@PostMapping(path = "/login")
-	public String Login(@RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
-		// refactor of the loggin controller
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		// check for session. if session exists get the page based on that
-		if (!msgs.isEmpty()) {
-			try {
-				Employee existingEmployee = empRepo.findByUserName(msgs.get(1));
-				if (existingEmployee.getIsSupervisor()) {
-					getManagerPage(model);
-					return "manager";
-				} else {
-					getEmployeePage(model, existingEmployee, existingEmployee.getTimeCards());
-					return "employee";
-				}
-			} catch (Exception ex) {
-				return "index";
+
+/* fields*/
+	private long max = (long).05;
+
+/************************************************************************************************************
+*Public Methods (can be called via web request) baseurl/value found in the mapping annotation
+************************************************************************************************************/
+	@PostMapping(path="/login")
+	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
+		//get user
+		try {
+		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
+		if (!existingEmployee.isApproved()) {
+			return "problemwithaccount";
+		}
+		//emp.setRecId(existingEmployee.getRecId());
+		List<TimeCard> timeCards = existingEmployee.getTimeCards();
+		Employee emp = new Employee();
+		String passedInPassword = user.get("password");
+		emp.setPassword(passedInPassword);
+		if (emp.comparePasswords(existingEmployee.getPassword())) {
+			//here we need to add in the user session data to keep the session alive for logged in users
+			@SuppressWarnings("unchecked")
+			List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
+			if ( msgs == null) {
+				 msgs = new ArrayList<>();
+				 msgs.add(0, existingEmployee.getId() + "");
+				 msgs.add(1, existingEmployee.getUserName());
+				 msgs.add(2, existingEmployee.getIsSupervisor()+"");
+				request.getSession().setAttribute("Session_Info", msgs);
 			}
+			//this has no business being here and needs to be moved into a service
+			for (int i = 0; i<timeCards.size(); i++) {
+				if (timeCards.get(i).getIsOpen()) {
+					//get the time now. get the time the ticket was opened. if the time is greater then 12 hours add a warning to the model to allow the user to go correct it
+					LocalDateTime now = LocalDateTime.now();
+					LocalDateTime started = timeCards.get(i).getStartTime();
+					Duration duration = Duration.between(now, started);
+					System.out.println(duration.toHours());
+					if (duration.toHours()<max) {
+						model.addAttribute("href", "/clockout");
+						model.addAttribute("btnText", "Clock Out");
+						model.addAttribute("btnId", "clockoutbtn");
+
+					} else {
+						//this should update the database to show that the ticket is completed, but it was completed by the system not the employee
+						timeCards.get(i).setEndTime(started.plusHours(max));
+						timeCards.get(i).setClosedBySystem();
+						model.addAttribute("problemTicket", true);
+						empRepo.save(existingEmployee);
+					}
+
+
 
 		} else if (user == null) {
 			return "index";
@@ -84,6 +113,7 @@ public class LoginController {
 					newMsgs.add(2, existingEmployee.getIsSupervisor() + "");
 					request.getSession().setAttribute("Session_Info", newMsgs);
 
+
 				}
 				// if normal employee
 				if (!existingEmployee.getIsSupervisor()) {
@@ -95,11 +125,13 @@ public class LoginController {
 				model.addAttribute("error", "Password is Invalid");
 				return "index";
 			}
+
 		} catch (Exception e) {
 			model.addAttribute("error", "User name not found.");
 			return "index";
 		}
 	}
+
 
 	@GetMapping(path = "/logout")
 	public String LogOut(Model model, HttpServletRequest request) {
@@ -144,6 +176,7 @@ public class LoginController {
 		return "employee";
 	}
 
+
 	private String getManagerPage(Model model) {
 		
 		List<Employee> needEditEmployees = getListOfEmployeesThatNeedTimeEdits();
@@ -160,6 +193,7 @@ public class LoginController {
 		}
 		return "manager";
 	}
+
 	private void seedTimeCardsWithTicketsToApprove() {
 		Employee emp = empRepo.getOne(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -198,6 +232,7 @@ public class LoginController {
 		}
 		return needEditEmployees;
 	}
+
 	/************************************************************************************************************
 	 * Enums
 	 ************************************************************************************************************/
