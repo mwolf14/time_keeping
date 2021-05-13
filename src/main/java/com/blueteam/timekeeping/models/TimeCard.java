@@ -33,19 +33,7 @@ public class TimeCard  {
 	private boolean needsApproved = false;
 	private int approvedBy;
 	
-	/*
-	@ManyToOne
-	@JoinColumn(name = "id", nullable = false)
-	private Employee employee;
-	
-	
-	public Employee getEmployee() {
-		return employee;
-	}
-	public void setEmployee(Employee emp) {
-		this.employee= emp;
-	}
-	*/
+
 /************************************************************************************************************
 *Public Methods Getters and Setters
 ************************************************************************************************************/
