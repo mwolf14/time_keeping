@@ -72,7 +72,7 @@ public class TimeCardController {
 		//wrap in try catch
 		@SuppressWarnings("unchecked")
 		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		if (msgs == null) {
+		if (msgs.isEmpty()) {
 			return new ResponseEntity<String>("Must log in", HttpStatus.FORBIDDEN);
 		} 
 		int test = Integer.parseInt(msgs.get(0));		
