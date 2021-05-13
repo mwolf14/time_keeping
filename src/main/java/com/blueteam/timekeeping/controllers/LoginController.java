@@ -41,23 +41,11 @@ public class LoginController {
 	public String Login( @RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		//get user
 
-		Employee existingEmployee;
-		List<String> incoming = isLoggedIn(request);
-		if (incoming != null) {
-			 existingEmployee = empRepo.getOne(Integer.parseInt(incoming.get(0)));
-		} else {
-			try {
-				 existingEmployee = empRepo.findByUserName(user.get("myName"));
-				if (!existingEmployee.isApproved()) {
-					return "problemwithaccount";
-				}
-			}
-			catch(Exception e){
-				model.addAttribute("error","User name not found.");
-				return "index";
-			}
+		try {
+		Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
+		if (!existingEmployee.isApproved()) {
+			return "problemwithaccount";
 		}
-
 		//emp.setRecId(existingEmployee.getRecId());
 		List<TimeCard> timeCards = existingEmployee.getTimeCards();
 		Employee emp = new Employee();
@@ -126,6 +114,11 @@ public class LoginController {
 			return "index";
 		}
 		}
+		catch(Exception e){
+			model.addAttribute("error","User name not found.");
+			return "index";
+		}
+	}
 
 	@GetMapping(path="/logout")
 	public String LogOut(Model model, HttpServletRequest request) {
