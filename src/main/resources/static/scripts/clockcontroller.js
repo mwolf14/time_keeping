@@ -5,48 +5,7 @@ Desc: add the event listener to the clock in clock out button
 "use strict"
 //the next 2 functions will probably need deleted. moved it to an anon in init
 function clockIn(){
-	$.ajax({
-		async: false,
-		type: 'GET',
-		url: "/clockin",
-		success: function(data, status) {
-			let btn = document.createElement('button');
-			btn.id = "clockoutbtn";
-			btn.addEventListener("click", clockOut, false);
-			let clockspan = document.getElementById("btn_span");
-			clockspan.innerHTML = "";
-			btnspan.appendChild(btn);
-			},
-		failure: function(data, status){
-			
-		}
-		});
-}
-
-function clockOut(){
-	$.ajax({
-		async: false,
-		type: 'GET',
-		url: "/clockout",
-		success: function(data, status) {
-			let btn = document.createElement('button');
-			btn.id = "clockinbtn";
-			btn.addEventListener("click", clockIn, false);
-			let clockspan = document.getElementById("btn_span");
-			clockspan.innerHTML = "";
-			btnspan.appendChild(btn);
-			},
-			failure: function(data, status){
-				
-			}
-		});
-}
-
-function init(){
-	console.log("in the init function of the clockcontroller script");
-	if ($('#clockinbtn')){
-		console.log("in the init function clockinbtn");
-    	$('#clockinbtn').on("click", function(){
+	$('#clockinbtn').on("click", function(){
 			$.ajax({
 		async: false,
 		type: 'GET',
@@ -54,19 +13,20 @@ function init(){
 		success: function(data, status) {
 			let btn = document.createElement('button');
 			btn.id = "clockoutbtn";
+			btn.textContent = "Clock Out";
 			btn.addEventListener("click", clockOut, false);
-			let clockspan = document.getElementById("btn_span");
-			clockspan.innerHTML = "";
-			btnspan.appendChild(btn);
+			let btn_span = document.getElementById("btn_span");
+			btn_span.innerHTML = "";
+			btn_span.appendChild(btn);
 			},
 		failure: function(data, status){
 			
 		}
-		});
-		});
-    } else{
-			console.log("in the init function clockoutbtn");
-    		$('#clockoutbtn').on("click", function(){
+	})});
+}
+
+function clockOut(){
+	$('#clockoutbtn').on("click", function(){
 					$.ajax({
 		async: false,
 		type: 'GET',
@@ -74,16 +34,29 @@ function init(){
 		success: function(data, status) {
 			let btn = document.createElement('button');
 			btn.id = "clockinbtn";
+			btn.textContent = "Clock In";
 			btn.addEventListener("click", clockIn, false);
-			let clockspan = document.getElementById("btn_span");
-			clockspan.innerHTML = "";
-			btnspan.appendChild(btn);
+			let btn_span = document.getElementById("btn_span");
+			btn_span.innerHTML = "";
+			btn_span.appendChild(btn);
 			},
 			failure: function(data, status){
 				
 			}
 			});
-    })
+		});
+}
+
+function init(){
+	console.log("in the init function of the clockcontroller script");
+	if ($('#clockinbtn')){
+		console.log("in the init function clockinbtn");
+    	clockIn();
+		
+    } else{
+			console.log("in the init function clockoutbtn");
+    		clockOut();
+	}
 }
 
 //eventlisteners for this page

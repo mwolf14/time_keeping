@@ -3,6 +3,7 @@
  * Desc: this controller handles login into and out of the system 
 */
 package com.blueteam.timekeeping.controllers;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,11 +26,13 @@ import com.blueteam.timekeeping.repositories.TimeCardRepository;
 @Controller
 @CrossOrigin
 public class LoginController {
-/*Autowired fields that are injected through the DI used in Spring */
+	/* Autowired fields that are injected through the DI used in Spring */
 	@Autowired
 	private EmployeeRepository empRepo;
 	@Autowired
 	private TimeCardRepository timeCardRepo;
+
+
 
 /* fields*/
 	private long max = (long).05;
@@ -81,54 +84,116 @@ public class LoginController {
 						model.addAttribute("problemTicket", true);
 						empRepo.save(existingEmployee);
 					}
-				}
-			}
-			if(!model.containsAttribute("href")) {
-				model.addAttribute("href", "/clockin");
-				model.addAttribute("btnText", "Clock In");
-				model.addAttribute("btnId", "clockinbtn");
 
-			}
-			if (existingEmployee.getIsSupervisor())
-			{
-				//this seed line will need removed, along with the method for seeding
-				seedTimeCardsWithTicketsToApprove();
-				List<Employee> needEditEmployees = getListOfEmployeesThatNeedTimeEdits();
-				if (needEditEmployees.size() != 0 ) {
-					model.addAttribute("needEditEmployees",needEditEmployees);
-				}
-				List<Employee> employeeNeedsApproved = empRepo.getByApprovedFalse();
-				for (int i = 0; i< employeeNeedsApproved.size(); i++) {
-					System.out.println(employeeNeedsApproved.get(i).getFirstName() + " " + employeeNeedsApproved.get(i).getLastName());
-				}
-				if (employeeNeedsApproved.size() != 0 ) {
-					model.addAttribute("employeeNeedApproved",employeeNeedsApproved);
-				}
-				return "manager";
-			}else {
-				return "employee";
-			}
-		}else {
-			model.addAttribute("error","Password is Invalid");
+
+
+		} else if (user == null) {
 			return "index";
 		}
-		}
-		catch(Exception e){
-			model.addAttribute("error","User name not found.");
+
+		try {
+			Employee existingEmployee = empRepo.findByUserName(user.get("myName"));
+			if (!existingEmployee.isApproved()) {
+				return "problemwithaccount";
+			}
+			// emp.setRecId(existingEmployee.getRecId());
+			List<TimeCard> timeCards = existingEmployee.getTimeCards();
+			Employee emp = new Employee();
+			String passedInPassword = user.get("password");
+			emp.setPassword(passedInPassword);
+			if (emp.comparePasswords(existingEmployee.getPassword())) {
+				// here we need to add in the user session data to keep the session alive for
+				// logged in users
+				@SuppressWarnings("unchecked")
+				List<String> newMsgs = (List<String>) request.getSession().getAttribute("Session_Info");
+				if (newMsgs.isEmpty()) {
+					newMsgs = new ArrayList<>();
+					newMsgs.add(0, existingEmployee.getId() + "");
+					newMsgs.add(1, existingEmployee.getUserName());
+					newMsgs.add(2, existingEmployee.getIsSupervisor() + "");
+					request.getSession().setAttribute("Session_Info", newMsgs);
+
+
+				}
+				// if normal employee
+				if (!existingEmployee.getIsSupervisor()) {
+					return getEmployeePage(model, existingEmployee, timeCards);
+				} else {
+					return getManagerPage(model);
+				}
+			} else {
+				model.addAttribute("error", "Password is Invalid");
+				return "index";
+			}
+
+		} catch (Exception e) {
+			model.addAttribute("error", "User name not found.");
 			return "index";
 		}
 	}
 
-	@GetMapping(path="/logout")
+
+	@GetMapping(path = "/logout")
 	public String LogOut(Model model, HttpServletRequest request) {
 		request.getSession().invalidate();
+		List<String> msgs = new ArrayList<>();
+		request.getSession().setAttribute("Session_Info", msgs);
 		return "index";
 	}
 
+	/************************************************************************************************************
+	 * Private methods
+	 ************************************************************************************************************/
+	private String getEmployeePage(Model model, Employee existingEmployee, List<TimeCard> timeCards) {
+		for (int i = 0; i < timeCards.size(); i++) {
+			if (timeCards.get(i).getIsOpen()) {
+				// get the time now. get the time the ticket was opened. if the time is greater
+				// then 12 hours add a warning to the model to allow the user to go correct it
+				LocalDateTime now = LocalDateTime.now();
+				LocalDateTime started = timeCards.get(i).getStartTime();
+				Duration duration = Duration.between(now, started);
+				System.out.println(duration.toHours());
+				if (duration.toHours() < max) {
+					model.addAttribute("href", "/clockout");
+					model.addAttribute("btnText", "Clock Out");
+					model.addAttribute("btnId", "clockoutbtn");
+				} else {
+					// this should update the database to show that the ticket is completed, but it
+					// was completed by the system not the employee
+					timeCards.get(i).setEndTime(started.plusHours(max));
+					timeCards.get(i).setClosedBySystem();
+					model.addAttribute("problemTicket", true);
+					empRepo.save(existingEmployee);
+				}
+			}
+		}
 
-/************************************************************************************************************
-*Private methods
-************************************************************************************************************/
+		if (!model.containsAttribute("href")) {
+			model.addAttribute("href", "/clockin");
+			model.addAttribute("btnText", "Clock In");
+			model.addAttribute("btnId", "clockinbtn");
+		}
+		return "employee";
+	}
+
+
+	private String getManagerPage(Model model) {
+		
+		List<Employee> needEditEmployees = getListOfEmployeesThatNeedTimeEdits();
+		if (needEditEmployees.size() != 0) {
+			model.addAttribute("needEditEmployees", needEditEmployees);
+		}
+		List<Employee> employeeNeedsApproved = empRepo.getByApprovedFalse();
+		for (int i = 0; i < employeeNeedsApproved.size(); i++) {
+			System.out.println(
+					employeeNeedsApproved.get(i).getFirstName() + " " + employeeNeedsApproved.get(i).getLastName());
+		}
+		if (employeeNeedsApproved.size() != 0) {
+			model.addAttribute("employeeNeedApproved", employeeNeedsApproved);
+		}
+		return "manager";
+	}
+
 	private void seedTimeCardsWithTicketsToApprove() {
 		Employee emp = empRepo.getOne(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -156,29 +221,20 @@ public class LoginController {
 			needEditEmployee.setId(allEmployees.get(i).getId());
 			needEditEmployee.setFirstName(allEmployees.get(i).getFirstName());
 			needEditEmployee.setLastName(allEmployees.get(i).getLastName());
-			for(int j = 0; j < allEmployees.get(i).getTimeCards().size(); j++) {
+			for (int j = 0; j < allEmployees.get(i).getTimeCards().size(); j++) {
 				if ((allEmployees.get(i).getTimeCards()).get(j).getNeedsApproved()) {
 					needEditEmployee.addTimeCard((allEmployees.get(i).getTimeCards()).get(j));
 				}
 			}
-			if (needEditEmployee.getTimeCards().size()!=0) {
+			if (needEditEmployee.getTimeCards().size() != 0) {
 				needEditEmployees.add(needEditEmployee);
 			}
 		}
 		return needEditEmployees;
 	}
-/************************************************************************************************************
-*Enums
-************************************************************************************************************/
-	
-	
 
-
-	private List<String> isLoggedIn(HttpServletRequest request) {
-		@SuppressWarnings("unchecked")
-		List<String> msgs = (List<String>) request.getSession().getAttribute("Session_Info");
-		return msgs ;
-	}
-
+	/************************************************************************************************************
+	 * Enums
+	 ************************************************************************************************************/
 
 }
