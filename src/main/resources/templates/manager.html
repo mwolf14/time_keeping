@@ -19,11 +19,12 @@
         	</tr>
         	<tr><td>Start Time<td>
         	<td>End Time<td></tr>
-        	<tr th:each="timecard: ${employee.getTimeCards}" th:id="timecard.getTimeCardId">
+        	<tr th:each="timecard: ${employee.getTimeCards}" th:id="${timecard.getTimeCardId}" class ="timeCardRow">
         	<td th:text=${timecard.getStartTime}></td>
         	<td th:text=${timecard.getEndTime}></td>
         	<td><button th:id="${employee.getId+'_'+timecard.getTimeCardId}" class="approve_timecard_btn">Approve</button></td>
         	</tr>
+        	
 </table>
 
 <!-- use the manager script init function to create the script to make the approve timecard button work-->
@@ -32,7 +33,7 @@
         <table>
         	<tr th:each="employee: ${employeeNeedApproved}">
         		
-        		<td th:text="${employee.getFirstName+' '+employee.getLastName}"></td>
+        		<td th:text="${employee.getFirstName+' '+employee.getLastName}" th:id="${employee.getId+'_row'}"></td>
         		<td><button th:id="${employee.getId}" class="approve_employee_btn">Approve</button></td>
         	</tr>
         </table>
