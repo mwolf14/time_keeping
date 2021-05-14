@@ -3,21 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Employee</title>
-    <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" />
-</head>
+<h1>employee created</h1>
+<p> this will let the user see his name and can redirect them to the page for the user clock in clock out</p>
 
-<body>
-
-
-	<h1>employee created</h1>
-	<h1>Welcome!</h1>
-	
-	<p>Your username is <b><p th:text="${userName}"></p></b>Please await for your account to be approve by a manager. In the meantime please return to the home page. </p>
-	<a href="index.html"><button>Return to login</button></a>
-	
-	
-</body>
+<p th:text=" ${userName}"><p><p> has been created</p>
 </html>
