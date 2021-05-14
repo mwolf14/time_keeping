@@ -39,10 +39,6 @@ public class LoginController {
 	 * Public Methods (can be called via web request) baseurl/value found in the
 	 * mapping annotation
 	 ************************************************************************************************************/
-	@GetMapping(path = "/")
-	public String Login() {
-		return "index";
-	}
 	@PostMapping(path = "/login")
 	public String Login(@RequestParam Map<String, String> user, Model model, HttpServletRequest request) {
 		// refactor of the loggin controller
