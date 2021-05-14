@@ -2,6 +2,7 @@
 package com.blueteam.timekeeping;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -9,6 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class TimekeepingApplication {
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(TimekeepingApplication.class, args);	
 	}
 

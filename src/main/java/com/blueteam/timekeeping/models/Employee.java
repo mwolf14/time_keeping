@@ -7,6 +7,7 @@
 package com.blueteam.timekeeping.models;
 
 import java.security.MessageDigest;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -60,9 +61,10 @@ public class Employee extends Person {
 	public boolean getIsSupervisor() {
 		return supervisor;
 	}
-	
+	//Turn on for prod and use
+	/*
 	//methods to deal with the password
-	/*public String getRecId() {
+	public String getRecId() {
 		return recId;
 	}
 	
@@ -83,12 +85,12 @@ public class Employee extends Person {
 
 	public void setPassword(String password) {
 		String pepper = password.substring(0,4);
-		this.password =  password + pepper;
+		this.password = password + pepper;
 		System.out.println(this.password);
 	}
 	
 	public Employee() {
-		super();		
+		super();	
 	}
 
 	public boolean isApproved() {
